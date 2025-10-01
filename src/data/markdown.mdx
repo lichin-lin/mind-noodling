@@ -1,0 +1,173 @@
+import { Sandpack } from "@codesandbox/sandpack-react";
+
+<br/ >
+<br/ >
+
+# How the Pulse Effect on Loops Was Made
+
+Over the past months we’ve been experimenting with motion and subtle effects in Loops. One area of focus has been pulse-like highlights that travel along paths. Since some of you might be curious about the SVG animation journey behind it, I’d like to share a breakdown of the techniques we explored and the trade-offs we found.
+
+---
+
+## 1. Linear Gradient Mask Translation
+
+**Idea:** Place a full-screen rectangle filled with a linear gradient inside a `<mask>`. White parts reveal, black parts hide. By animating the gradient’s transform or the rect’s position, you create a moving “window” that reveals part of a stroked path.
+
+**Pros:**
+
+- Easy to implement with a single gradient and `<animateTransform>`.
+- Works with any arbitrary path stroke beneath.
+
+<div className="code-block">
+<Sandpack
+    theme="dark"
+    template="react"
+    showOpenInCodeSandbox={false}
+    options={{
+        showNavigator: true,
+        showLineNumbers: true,
+        showInlineErrors: true,
+        editorHeight: 350,
+        editorWidthPercentage: 50,
+    }}
+>
+```js /App.js
+export default function App() {
+  return <h1 className="">Hello world</h1>
+}
+```
+
+```css /styles.css hidden
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 40px);
+}
+```
+
+```html /public/index.html hidden
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scＦale=1.0">
+        <title>SVG Preview</title>
+        <link rel="stylesheet" href="/styles.css">
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
+</html>
+```
+</Sandpack>
+</div>
+
+**Cons:**
+
+- Sensitive to container sizing and coordinate systems (`objectBoundingBox` vs. `userSpaceOnUse`).
+- On curved paths, the highlight may look uneven since the band is linear, not path-shaped.
+- Safari has quirks animating `gradientTransform`.
+
+---
+
+## 2. Mask Rect Animation
+
+**Idea:** Instead of animating the gradient itself, animate the `<rect>` that references the gradient inside the mask. Use `maskUnits="objectBoundingBox"` so `%` coordinates behave predictably.
+
+**Pros:**
+
+- More reliable across browsers, including Safari.
+- Keeps gradient static, only moves the shape that carries it.
+
+**Cons:**
+
+- Still limited to a linear reveal band; doesn’t perfectly hug curved paths.
+
+---
+
+## 3. Gradient with `userSpaceOnUse` and Animated Coordinates
+
+**Idea:** Define the gradient in user space and animate its `x1`, `x2` (or `y1`, `y2`) to sweep across the canvas.
+
+**Pros:**
+
+- Fine control of positioning and direction.
+- Can create non-linear movements by adjusting coordinates.
+
+**Cons:**
+
+- More verbose, requires careful math for start/end values.
+- Can behave differently if the SVG viewBox or aspect ratio changes.
+
+---
+
+## 4. Path-relative Dash Mask (Comet Tail)
+
+**Idea:** Stroke the path in white inside a mask, apply a `stroke-dasharray` with a visible segment + gap, and animate `stroke-dashoffset`. This creates a moving white window that travels along the path. Overlay a radial gradient circle that follows the path with `<animateMotion>`.
+
+**Pros:**
+
+- The reveal is locked exactly to the path, regardless of curves.
+- Produces natural “comet tail” or highlight effects.
+- Robust under scaling and complex path shapes.
+
+**Cons:**
+
+- Requires knowing the path length to calculate dash values.
+- Uses SMIL (`<animateMotion>`, `<animate>`) which, while widely supported, isn’t part of CSS animations.
+
+---
+
+## 5. Measuring Path Length Dynamically
+
+**Idea:** Use JavaScript’s `getTotalLength()` to compute path length at runtime, then set the `stroke-dasharray` and animation offsets programmatically.
+
+**Pros:**
+
+- Eliminates hard-coding values like `250 1664`.
+- Adapts automatically if the path changes.
+
+**Cons:**
+
+- Requires runtime JS; not purely declarative.
+- Adds complexity when integrating with React or other frameworks.
+
+---
+
+## 6. Variants: Orthogonal Paths
+
+We also explored rendering different path geometries:
+
+- **Smooth Bezier loop** for organic flows.
+- **Rounded-rectangle loop** for structured but soft motion.
+- **Zig-zag orthogonal path** for mechanical or grid-like aesthetics.
+
+The masking and comet-tail methods can be applied to any of these path definitions, producing different visual styles.
+
+---
+
+# Trade-offs Recap
+
+- **Linear/rectangular masks** are simpler but may not look natural on curves.
+- **Dash-based masks** are path-relative, producing cleaner effects but requiring more setup.
+- **Declarative SVG** is portable and self-contained, but occasionally limited by browser quirks.
+- **JS-enhanced approaches** give flexibility (e.g. dynamic path length) but trade simplicity.
+
+---
+
+# References
+
+- [MDN: SVG Masking](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mask)
+- [MDN: SVG AnimateMotion](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion)
+- [SVG Path Editor](https://yqnn.github.io/svg-path-editor/)
+- [SVG getTotalLength()](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path#gettotallength)

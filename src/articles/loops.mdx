@@ -1,0 +1,125 @@
+export const metadata = {
+  title: "Creating Perfect Loops",
+  slug: "loops",
+  description: "Discover techniques for creating seamless looping animations with SVG paths.",
+  publishDate: "2025-10-08",
+  tags: ["svg", "animation", "loops"]
+};
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+
+# Creating Perfect Loops
+
+Seamless looping animations are essential for creating engaging, non-distracting background effects. This guide shows you how to master the loop.
+
+---
+
+## The Secret to Seamless Loops
+
+The key to a perfect loop is ensuring your animation's end state matches its start state. With SVG paths, this means careful planning of your `stroke-dashoffset` values.
+
+<div className="code-block">
+<Sandpack
+    theme="dark"
+    template="react"
+    showOpenInCodeSandbox={false}
+    options={{
+        showNavigator: false,
+        showLineNumbers: true,
+        showInlineErrors: true,
+        editorHeight: 450,
+        editorWidthPercentage: 50,
+    }}
+>
+```js /App.js
+export default function App() {
+  return (
+    <div style={{ padding: '20px' }}>
+      <h2>Perfect Loop Animation</h2>
+      <svg width="400" height="400" viewBox="0 0 400 400">
+        <defs>
+          <linearGradient id="loopGradient">
+            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="50%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#8b5cf6" />
+          </linearGradient>
+        </defs>
+        
+        {/* Infinity loop */}
+        <path
+          d="M 100 200 Q 150 100, 200 200 Q 250 300, 300 200 Q 250 100, 200 200 Q 150 300, 100 200"
+          stroke="url(#loopGradient)"
+          strokeWidth="6"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray="20 10"
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            from="0"
+            to="30"
+            dur="1s"
+            repeatCount="indefinite"
+          />
+        </path>
+        
+        {/* Animated dot */}
+        <circle r="8" fill="#06b6d4">
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            path="M 100 200 Q 150 100, 200 200 Q 250 300, 300 200 Q 250 100, 200 200 Q 150 300, 100 200"
+          />
+        </circle>
+      </svg>
+    </div>
+  );
+}
+```
+
+```css /styles.css hidden
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+```
+</Sandpack>
+</div>
+
+---
+
+## Loop Design Patterns
+
+### Circular Paths
+Circles naturally loop. Use the arc command or a closed bezier curve for smooth circular motion.
+
+### Figure-8 Patterns
+Infinity symbols and figure-8 patterns create interesting visual flow while looping seamlessly.
+
+### Repeating Segments
+For dashed animations, make sure your `strokeDasharray` divides evenly into your path length.
+
+---
+
+## AnimateMotion for Complex Loops
+
+The `<animateMotion>` element moves elements along a path, perfect for creating particles or indicators that follow your loop.
+
+---
+
+## Performance Tips
+
+- Use `will-change: transform` for smoother animations
+- Keep path complexity reasonable
+- Consider using CSS animations for simple loops
+- Test on lower-end devices

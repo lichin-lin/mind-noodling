@@ -1,6 +1,25 @@
 @import url("https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
 @import "tailwindcss";
 
+@theme {
+  --color-background: rgb(255, 255, 255);
+  --color-background-dark: rgb(26, 26, 26);
+  --color-foreground: rgb(26, 26, 26);
+  --color-foreground-dark: rgb(255, 255, 255);
+  --color-muted: rgb(102, 102, 102);
+  --color-muted-dark: rgb(163, 163, 163);
+  --color-muted-foreground: rgb(55, 53, 47);
+  --color-muted-foreground-dark: rgb(163, 163, 163);
+  --color-border: rgb(233, 233, 231);
+  --color-border-dark: rgb(55, 55, 55);
+  --color-code: rgb(247, 246, 243);
+  --color-code-dark: rgb(40, 40, 40);
+  --color-code-text: rgb(235, 87, 87);
+  --color-code-text-dark: rgb(255, 115, 115);
+  --color-link: rgb(0, 102, 204);
+  --color-link-dark: rgb(88, 166, 255);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -12,19 +31,40 @@
   font-weight: 400;
   --sp-border-radius: 8px !important;
 
-  color-scheme: light;
-  color: #213547;
-  background-color: #ffffff;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Set default light mode colors */
+  --color-bg: var(--color-background);
+  --color-fg: var(--color-foreground);
+  --color-text-muted: var(--color-muted);
+  --color-text-muted-fg: var(--color-muted-foreground);
+  --color-bd: var(--color-border);
+  --color-code-bg: var(--color-code);
+  --color-code-txt: var(--color-code-text);
+  --color-lnk: var(--color-link);
+}
+
+.dark {
+  /* Override with dark mode colors */
+  --color-bg: var(--color-background-dark);
+  --color-fg: var(--color-foreground-dark);
+  --color-text-muted: var(--color-muted-dark);
+  --color-text-muted-fg: var(--color-muted-foreground-dark);
+  --color-bd: var(--color-border-dark);
+  --color-code-bg: var(--color-code-dark);
+  --color-code-txt: var(--color-code-text-dark);
+  --color-lnk: var(--color-link-dark);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -32,13 +72,14 @@ body {
 }
 
 a {
+  color: var(--color-lnk);
   font-weight: 500;
-  color: #646cff;
   text-decoration: inherit;
+  transition: opacity 0.2s ease;
 }
 
 a:hover {
-  color: #535bf2;
+  opacity: 0.8;
 }
 
 button {

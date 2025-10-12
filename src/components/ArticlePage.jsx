@@ -15,20 +15,20 @@ export function ArticlePage() {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-8 py-12">
+    <>
       <Link
         to="/"
-        className="inline-flex items-center mb-8 hover:opacity-70 transition-opacity"
-        style={{ color: "var(--color-lnk)" }}
+        className="fixed top-4 left-4 z-50 inline-flex items-center p-2 rounded hover:opacity-70 transition-opacity"
+        style={{ color: "var(--color-text-muted)" }}
       >
         <svg
-          className="w-4 h-4 mr-2"
+          className="w-4 h-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -40,22 +40,23 @@ export function ArticlePage() {
             d="M10 19l-7-7m0 0l7-7m-7 7h18"
           />
         </svg>
-        Back to articles
       </Link>
 
-      <header className="mb-8">
-        <time
-          className="text-sm block mb-4"
-          style={{ color: "var(--color-text-muted)" }}
-          dateTime={article.publishDate}
-        >
-          {formatDate(article.publishDate)}
-        </time>
-      </header>
+      <div className="w-full max-w-2xl mx-auto py-20">
+        <header className="mb-12">
+          <time
+            className="text-sm block mb-2"
+            style={{ color: "var(--color-text-muted)" }}
+            dateTime={article.publishDate}
+          >
+            {formatDate(article.publishDate)}
+          </time>
+        </header>
 
-      <div className="prose max-w-none">
-        <ArticleComponent />
+        <div className="prose w-full">
+          <ArticleComponent />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

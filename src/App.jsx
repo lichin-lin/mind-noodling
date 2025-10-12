@@ -7,7 +7,7 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter basename="/">
-      <div className="min-h-screen flex flex-col items-center justify-center transition-colors duration-300">
+      <div className="min-h-screen flex flex-col items-center transition-colors duration-300">
         <div className="fixed top-4 right-4 z-50">
           <ThemeToggle />
         </div>

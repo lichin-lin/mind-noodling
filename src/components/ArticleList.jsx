@@ -6,49 +6,53 @@ export function ArticleList() {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-8 py-12">
-      <div className="space-y-8">
+    <div className="w-full max-w-2xl px-2 pt-24 pb-20 flex flex-col gap-16">
+      {/* Header section with title and description */}
+      <header className="flex flex-col gap-3 px-3">
+        <h1
+          className="text-4xl font-semibold"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Mind noodling
+        </h1>
+        <p
+          className="text-base text-balance"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          Thoughts on building interfaces, crafting interactions, and making
+          tools that don't suck.
+        </p>
+      </header>
+
+      <div className="flex flex-col gap-4">
         {articles.map((article) => (
           <Link
             key={article.slug}
             to={`/${article.slug}`}
-            className="block group"
+            className="article-link w-fit px-4 py-2 rounded-lg transition-colors duration-150"
           >
-            <article
-              className="p-6 rounded-lg transition-all duration-200 hover:scale-[1.02]"
-              style={{
-                backgroundColor: "var(--color-code-bg)",
-                border: "1px solid var(--color-bd)",
-              }}
-            >
+            <div className="flex flex-col gap-0.5">
               <h2
-                className="text-2xl font-semibold mb-2 group-hover:opacity-80 transition-opacity"
+                className="text-base font-normal"
                 style={{ color: "var(--color-fg)" }}
               >
                 {article.title}
               </h2>
 
               <time
-                className="text-sm mb-3 block"
+                className="text-sm font-normal"
                 style={{ color: "var(--color-text-muted)" }}
                 dateTime={article.publishDate}
               >
                 {formatDate(article.publishDate)}
               </time>
-
-              <p
-                className="text-base leading-relaxed mb-4"
-                style={{ color: "var(--color-text-muted-fg)" }}
-              >
-                {article.description}
-              </p>
-            </article>
+            </div>
           </Link>
         ))}
       </div>

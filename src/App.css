@@ -2,6 +2,16 @@
   --sp-border-radius: 8px !important;
 }
 
+/* Article list hover effect */
+.article-link {
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.article-link:hover {
+  background-color: var(--color-code-bg);
+}
+
 .prose {
   color: var(--color-fg);
 }

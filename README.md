@@ -1,3 +1,3 @@
-# 💫
+# 🍜
 
-An interactive learning platform for understanding SVG path data through hands-on experiments. Built with React, Vite, react-markdown, and Sandpack.
+Thoughts on building interfaces, crafting interactions, and making tools that don't suck.

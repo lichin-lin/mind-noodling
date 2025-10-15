@@ -1,0 +1,119 @@
+/* Code block wrapper with copy button */
+.code-block-wrapper {
+  position: relative;
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-bd);
+  overflow: hidden;
+  background-color: var(--color-code-bg);
+}
+
+.code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-bottom: 1px solid var(--color-bd);
+  background-color: var(--color-code-bg);
+}
+
+.code-block-wrapper pre {
+  margin: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 0;
+}
+
+.code-block-wrapper pre code {
+  padding: 1rem;
+}
+
+.code-block-language {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
+}
+
+.code-block-copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.code-block-copy-btn:hover {
+  background-color: var(--color-bd);
+  color: var(--color-fg);
+}
+
+.code-block-copy-btn:active {
+  transform: scale(0.95);
+}
+
+.code-block-wrapper pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* Syntax highlighting for light mode */
+.code-block-wrapper .hljs-comment,
+.code-block-wrapper .hljs-quote {
+  color: #6a737d;
+}
+
+.code-block-wrapper .hljs-keyword,
+.code-block-wrapper .hljs-selector-tag {
+  color: #d73a49;
+}
+
+.code-block-wrapper .hljs-string,
+.code-block-wrapper .hljs-attr {
+  color: #032f62;
+}
+
+.code-block-wrapper .hljs-number,
+.code-block-wrapper .hljs-literal {
+  color: #005cc5;
+}
+
+.code-block-wrapper .hljs-tag,
+.code-block-wrapper .hljs-name {
+  color: #22863a;
+}
+
+/* Syntax highlighting for dark mode */
+.dark .code-block-wrapper .hljs-comment,
+.dark .code-block-wrapper .hljs-quote {
+  color: #8b949e;
+}
+
+.dark .code-block-wrapper .hljs-keyword,
+.dark .code-block-wrapper .hljs-selector-tag {
+  color: #ff7b72;
+}
+
+.dark .code-block-wrapper .hljs-string,
+.dark .code-block-wrapper .hljs-attr {
+  color: #a5d6ff;
+}
+
+.dark .code-block-wrapper .hljs-number,
+.dark .code-block-wrapper .hljs-literal {
+  color: #79c0ff;
+}
+
+.dark .code-block-wrapper .hljs-tag,
+.dark .code-block-wrapper .hljs-name {
+  color: #7ee787;
+}

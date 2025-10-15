@@ -1,5 +1,6 @@
 import { useParams, Navigate } from "react-router-dom";
 import { articles } from "../articles";
+import { CodeBlock } from "./CodeBlock";
 
 export function ArticlePage() {
   const { slug } = useParams();
@@ -10,6 +11,17 @@ export function ArticlePage() {
   }
 
   const ArticleComponent = article.Component;
+
+  // Custom components for MDX
+  const components = {
+    pre: (props) => {
+      // Check if this pre contains a code element
+      if (props.children?.type === "code") {
+        return <CodeBlock {...props.children.props} />;
+      }
+      return <pre {...props} />;
+    },
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -34,7 +46,7 @@ export function ArticlePage() {
         </header>
 
         <div className="prose w-full">
-          <ArticleComponent />
+          <ArticleComponent components={components} />
         </div>
       </div>
     </>

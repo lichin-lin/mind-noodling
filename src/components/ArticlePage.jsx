@@ -42,7 +42,7 @@ export function ArticlePage() {
         </svg>
       </Link>
 
-      <div className="w-full max-w-2xl mx-auto py-20">
+      <div className="w-full max-w-3xl mx-auto py-20 px-4">
         <header className="mb-12">
           <time
             className="text-sm block mb-2"

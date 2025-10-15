@@ -1,104 +1,94 @@
 export const metadata = {
-  title: "Simple Flow Animation",
+  title: "Building Simpleflow: connectors, fig-kiwi, and the clipboard",
   slug: "simpleflow",
-  description: "Learn how to create smooth flow animations using SVG paths and CSS transitions.",
-  publishDate: "2025-10-01",
-  tags: ["svg", "animation", "flow"]
+  description:
+    "A behind-the-scenes look at building simpleflow, and how the fig-kiwi format accidentally saved it",
+  publishDate: "2025-11-01",
+  tags: [],
 };
 
 import { Sandpack } from "@codesandbox/sandpack-react";
 
-# Simple Flow Animation
+# Building Simpleflow: connectors, fig-kiwi, and the clipboard
 
-This article explores the fundamentals of creating smooth flow animations with SVG paths. We'll start with basic concepts and build up to more complex examples.
+A behind-the-scenes look at building simpleflow, and how the fig-kiwi format accidentally saved it
+
+<img src="src/assets/simpleflow/cover.png" />
 
 ---
 
-## Getting Started
 
-Flow animations are a great way to guide users' attention and create dynamic, engaging interfaces. The key is understanding how SVG paths work and how to animate them effectively.
+Most of us draw diagrams — flowcharts, user journeys, system maps — to explain how things work. they’re the connective tissue of ideas: boxes, arrows, and loops that make complexity easier to see.
 
-<div className="code-block">
-<Sandpack
-    theme="dark"
-    template="react"
-    showOpenInCodeSandbox={false}
-    options={{
-        showNavigator: false,
-        showLineNumbers: true,
-        showInlineErrors: true,
-        editorHeight: 400,
-        editorWidthPercentage: 50,
-    }}
->
-```js /App.js
-export default function App() {
-  return (
-    <div style={{ padding: '20px' }}>
-      <h2>Simple Flow</h2>
-      <svg width="400" height="200" viewBox="0 0 400 200">
-        <defs>
-          <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#8b5cf6" />
-          </linearGradient>
-        </defs>
-        
-        <path
-          d="M 50 100 Q 200 50, 350 100"
-          stroke="url(#flowGradient)"
-          strokeWidth="4"
-          fill="none"
-          strokeDasharray="1000"
-          strokeDashoffset="1000"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            from="1000"
-            to="0"
-            dur="2s"
-            repeatCount="indefinite"
-          />
-        </path>
-      </svg>
-    </div>
-  );
-}
-```
+Back in 2019, when [figma first opened its plugin api](https://www.figma.com/community/plugins), i had a small idea:  what if it were easy to draw clean, orthogonal connectors between elements, right inside figma design?
 
-```css /styles.css hidden
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: #1a1a1a;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-  background-size: 20px 20px;
-}
+It sounded simple. it wasn’t. that idea turned into a five-year exploration — part geometry puzzle, part reverse-engineering — and eventually became [**simpleflow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
 
-#root {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-```
-</Sandpack>
+---
+
+## 2019–2022 · The geometry rabbit hole
+
+The first versions of simpleflow were built around one goal: **draw connectors that look tidy and don’t overlap everything.**
+
+Sounds easy, but routing lines between moving boxes is a surprisingly deep problem. What counts as a “good” route? how do you avoid messy zig-zags? how do you handle nested frames and auto-layout?
+
+I spent few months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If i’d seen [this article](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would’ve saved a lot of time — it covers most of those edge cases neatly.
+
+Then, in **April 2021**, [Figjam launched](https://www.figma.com/figjam/). It was both inspiring and humbling. Figjam’s connectors were alive — they updated automatically when you moved shapes. my plugin’s connectors were static vectors. they broke as soon as you rearranged anything.
+
+There was a [`createConnector()`](https://developers.figma.com/docs/plugins/api/properties/figma-createconnector/) api, but only for Figjam, not Figma design. I tried a few experiments, but couldn’t make them feel native. Eventually i paused the project.
+
+---
+
+## 2023 · One button, big turning point
+
+
+In **January 2023**, a [tweet from Danny Postmaa](https://x.com/dannypostmaa/status/1612345747495874561) mentioned [Figcomponents.com](https://www.figcomponents.com/) — a site that let you copy UI components from the web and paste them straight into Figma. That caught my eye. If the browser could paste elements into Figma, maybe that same mechanism could also paste **connectors**.
+
+So I stripped SimpleFlow down to a single idea: **One button — “Copy Connector.”**
+
+_Click → Paste → Done_. No settings, no color pickers, no dropdowns.
+
+Usage tripled overnight. The smaller it got, the better it worked. But it also raised a new question: **What exactly am I copying when I press that button?**  And that question sent me down another rabbit hole.
+
+---
+
+## Opening the Clipboard
+
+To understand what was happening, I did something simple: I drew a connector in FigJam, pressed **Cmd/Ctrl + C**, and opened a clipboard viewer.
+
+At first, nothing looked unusual — just empty text fields. Most clipboard tools only show `text/plain`. So I tried [Evercoder’s Clipboard Inspector](https://github.com/evercoder/clipboard-inspector), which exposes every format (`text/html`, `image/png`, etc.).
+
+And there it was.
+
+Figma writes two formats to the clipboard: `text/plain` and `text/html`. The HTML looks roughly like this:
+
+```html
+<meta charset="utf-8">
+<div>
+  <span data-metadata="<!--(figmeta)…(/figmeta)-->"></span>
+  <span data-buffer="<!--(figma)…(/figma)-->"></span>
 </div>
+<span style="white-space:pre-wrap;">Text</span>
+```
+
+`data-metadata` is a short, Base64-encoded JSON string — easy to decode with `JSON.parse(atob(...))`. However, `data-buffer` is long — sometimes over 25,000 characters — and decoding it gives you a binary blob that begins with fig-kiwi.
+
+That prefix was the clue — a small but critical hint that revealed how Figma stores copied data internally.
 
 ---
 
-## Key Concepts
+## Discovering *fig-kiwi*
 
-### Stroke Dash Animation
+After some digging, I found [Evan Wallace’s public .fig parser](https://madebyevan.com/figma/fig-file-parser/) and an article explaining how Figma handles clipboard data. It turns out that *Kiwi* is Figma’s internal message format — a binary schema used to encode `.fig` files.
 
-The `stroke-dasharray` and `stroke-dashoffset` properties are the foundation of path animations. By animating the offset, we can create the illusion of a path being drawn.
+That means every time you copy something in Figma, here’s what actually happens:
 
-### Timing and Easing
+1. Figma packages the selected element as a **tiny `.fig` file**.  
+2. It encodes that file in Base64.  
+3. It embeds the encoded data inside HTML comments, like `<!--(figma)…(/figma)-->`.  
+4. It writes the resulting HTML snippet to your clipboard as `text/html`.
 
-Smooth animations require careful attention to timing. CSS transitions and SVG `<animate>` elements both offer easing functions for natural motion.
+You can even test this yourself: Decode the Base64 string from `data-buffer`, save it as `sample.fig`, and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see a miniature Figma file — complete with nodes, layers, and styles — representing exactly what you copied.
 
----
-
-## Next Steps
-
-Try experimenting with different path shapes, gradients, and timing functions to create unique flow animations!
+This design makes cross-app copy-and-paste possible. By using common clipboard types such as `text/html`, browsers can map clipboard data to native OS formats (`CF_HTML` on Windows, `NSPasteboard.PasteboardType.html` on macOS). That’s why you can copy from Figma in the browser and paste seamlessly into the desktop app.

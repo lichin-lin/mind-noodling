@@ -75,11 +75,7 @@ a {
   color: var(--color-lnk);
   font-weight: 500;
   text-decoration: inherit;
-  transition: opacity 0.2s ease;
-}
-
-a:hover {
-  opacity: 0.8;
+  transition: opacity 150ms ease;
 }
 
 button {

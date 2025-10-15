@@ -3,7 +3,6 @@ import "./CodeBlock.css";
 
 export function CodeBlock({ children, className, ...props }) {
   const [copied, setCopied] = useState(false);
-
   // Extract language from className (e.g., "language-javascript")
   const language = className?.replace(/language-/, "") || "text";
 

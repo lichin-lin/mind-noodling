@@ -8,11 +8,22 @@
   background-color: var(--color-code-bg);
 }
 
+.code-block-wrapper pre {
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0;
+  width: 100%;
+}
+
+.code-block-wrapper code {
+  padding: 0 !important;
+}
+
 .code-block-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem ;
   border-bottom: 1px solid var(--color-bd);
   background-color: var(--color-code-bg);
 }
@@ -90,7 +101,7 @@
 .highlight-line {
   margin-left: -14px;
   margin-right: -16px;
-  background-color: rgba(251, 191, 36, 0.1);
+  background-color: rgba(146, 114, 49, 0.05);
   border-left: 2px solid rgb(251, 191, 36);
 }
 
@@ -107,22 +118,4 @@
   margin-left: -8px;
   color: var(--color-text-muted);
   content: attr(line);
-}
-
-/* Code title styles */
-.rehype-code-title {
-  margin: 0 !important;
-  display: inline-flex;
-  position: relative;
-  top: 1rem;
-  left: 1rem;
-  background: var(--color-code-bg);
-  color: var(--color-fg);
-  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
-    "Courier New", monospace;
-  padding: 0.25rem 1rem;
-  border-radius: 0.5rem 0.5rem 0 0;
-  border-top: 3px solid rgb(99, 102, 241);
-  font-size: 0.8rem;
-  font-weight: 500;
 }

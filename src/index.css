@@ -121,7 +121,7 @@ pre[class*='language-'] {
 .token.rule,
 .token.pseudo-class,
 .token.important {
-  color: rgb(147, 197, 253); /* blue-300 */
+  color: rgb(96, 165, 250); /* blue-400 */
 }
 
 .token.module {
@@ -129,7 +129,7 @@ pre[class*='language-'] {
 }
 
 .token.attr-value {
-  color: rgb(147, 197, 253); /* blue-300 */
+  color: rgb(96, 165, 250); /* blue-400 */
 }
 
 .token.string {

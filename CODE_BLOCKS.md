@@ -128,6 +128,7 @@ The code blocks use your existing theme variables and automatically adapt to lig
 ## Technologies
 
 - **rehype-prism-plus** - Syntax highlighting with line numbers and highlighting support
+- **rehype-code-titles** - Code block titles
 - **Prism.js** - Underlying syntax highlighting engine
 
 ## Tips

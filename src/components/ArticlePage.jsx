@@ -1,4 +1,4 @@
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { articles } from "../articles";
 
 export function ArticlePage() {
@@ -22,26 +22,6 @@ export function ArticlePage() {
 
   return (
     <>
-      <Link
-        to="/"
-        className="fixed top-4 left-4 z-50 inline-flex items-center p-2 rounded hover:opacity-70 transition-opacity"
-        style={{ color: "var(--color-text-muted)" }}
-      >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
-      </Link>
-
       <div className="w-full max-w-3xl mx-auto py-20 px-4">
         <header className="mb-12">
           <time

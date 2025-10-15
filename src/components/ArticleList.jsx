@@ -14,7 +14,7 @@ export function ArticleList() {
   return (
     <div className="w-full max-w-2xl px-2 pt-24 pb-20 flex flex-col gap-16">
       {/* Header section with title and description */}
-      <header className="flex flex-col gap-3 px-3">
+      <header className="flex flex-col gap-3 px-2">
         <h1
           className="text-4xl font-semibold"
           style={{ color: "var(--color-fg)" }}
@@ -35,7 +35,7 @@ export function ArticleList() {
           <Link
             key={article.slug}
             to={`/${article.slug}`}
-            className="article-link w-fit px-4 py-2 rounded-lg transition-colors duration-150"
+            className="article-link w-full px-4 py-3 rounded-lg transition-colors duration-150"
           >
             <div className="flex flex-col gap-0.5">
               <h2

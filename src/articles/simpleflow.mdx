@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Building Simpleflow: connectors, fig-kiwi, and the clipboard",
+  title: "A behind-the-scenes look at building simpleflow",
   slug: "simpleflow",
   description:
     "A behind-the-scenes look at building simpleflow, and how the fig-kiwi format accidentally saved it",
@@ -7,20 +7,17 @@ export const metadata = {
   tags: [],
 };
 
-import { Sandpack } from "@codesandbox/sandpack-react";
+# A behind-the-scenes look at building Simpleflow
 
-# Building Simpleflow: connectors, fig-kiwi, and the clipboard
-
-A behind-the-scenes look at building simpleflow, and how the fig-kiwi format accidentally saved it
+A behind-the-scenes look at building Simpleflow, and how the fig-kiwi format accidentally saved it
 
 <img src="src/assets/simpleflow/cover.png" />
 
 ---
 
-
 Most of us draw diagrams — flowcharts, user journeys, system maps — to explain how things work. they’re the connective tissue of ideas: boxes, arrows, and loops that make complexity easier to see.
 
-Back in 2019, when [figma first opened its plugin api](https://www.figma.com/community/plugins), i had a small idea:  what if it were easy to draw clean, orthogonal connectors between elements, right inside figma design?
+Back in 2019, when [figma first opened its plugin api](https://www.figma.com/community/plugins), i had a small idea: what if it were easy to draw clean, orthogonal connectors between elements, right inside figma design?
 
 It sounded simple. it wasn’t. that idea turned into a five-year exploration — part geometry puzzle, part reverse-engineering — and eventually became [**simpleflow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
 
@@ -42,14 +39,13 @@ There was a [`createConnector()`](https://developers.figma.com/docs/plugins/api/
 
 ## 2023 · One button, big turning point
 
-
 In **January 2023**, a [tweet from Danny Postmaa](https://x.com/dannypostmaa/status/1612345747495874561) mentioned [Figcomponents.com](https://www.figcomponents.com/) — a site that let you copy UI components from the web and paste them straight into Figma. That caught my eye. If the browser could paste elements into Figma, maybe that same mechanism could also paste **connectors**.
 
 So I stripped SimpleFlow down to a single idea: **One button — “Copy Connector.”**
 
 _Click → Paste → Done_. No settings, no color pickers, no dropdowns.
 
-Usage tripled overnight. The smaller it got, the better it worked. But it also raised a new question: **What exactly am I copying when I press that button?**  And that question sent me down another rabbit hole.
+Usage tripled overnight. The smaller it got, the better it worked. But it also raised a new question: **What exactly am I copying when I press that button?** And that question sent me down another rabbit hole.
 
 ---
 
@@ -64,7 +60,7 @@ And there it was.
 Figma writes two formats to the clipboard: `text/plain` and `text/html`. The HTML looks roughly like this:
 
 ```html
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <div>
   <span data-metadata="<!--(figmeta)…(/figmeta)-->"></span>
   <span data-buffer="<!--(figma)…(/figma)-->"></span>
@@ -78,17 +74,83 @@ That prefix was the clue — a small but critical hint that revealed how Figma s
 
 ---
 
-## Discovering *fig-kiwi*
+## Discovering _fig-kiwi_
 
-After some digging, I found [Evan Wallace’s public .fig parser](https://madebyevan.com/figma/fig-file-parser/) and an article explaining how Figma handles clipboard data. It turns out that *Kiwi* is Figma’s internal message format — a binary schema used to encode `.fig` files.
+After some digging, I found [Evan Wallace’s public .fig parser](https://madebyevan.com/figma/fig-file-parser/) and an article explaining how Figma handles clipboard data. It turns out that _Kiwi_ is Figma’s internal message format — a binary schema used to encode `.fig` files.
 
 That means every time you copy something in Figma, here’s what actually happens:
 
-1. Figma packages the selected element as a **tiny `.fig` file**.  
-2. It encodes that file in Base64.  
-3. It embeds the encoded data inside HTML comments, like `<!--(figma)…(/figma)-->`.  
+1. Figma packages the selected element as a **tiny `.fig` file**.
+2. It encodes that file in Base64.
+3. It embeds the encoded data inside HTML comments, like `<!--(figma)…(/figma)-->`.
 4. It writes the resulting HTML snippet to your clipboard as `text/html`.
 
 You can even test this yourself: Decode the Base64 string from `data-buffer`, save it as `sample.fig`, and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see a miniature Figma file — complete with nodes, layers, and styles — representing exactly what you copied.
 
 This design makes cross-app copy-and-paste possible. By using common clipboard types such as `text/html`, browsers can map clipboard data to native OS formats (`CF_HTML` on Windows, `NSPasteboard.PasteboardType.html` on macOS). That’s why you can copy from Figma in the browser and paste seamlessly into the desktop app.
+
+---
+
+## Decoding, Tweaking, Re-encoding
+
+Once I realized I was working with actual `.fig` files, the next step became clear.
+
+1. **Decode** the `data-buffer` Base64 string into binary, then parse it with the `.fig` parser to get structured data.
+2. **Modify** what I cared about — color, label, connector direction, stroke width, or any other properties.
+3. **Re-encode** the updated file back into binary, then into Base64.
+4. **Write** the result back to the clipboard as `text/html`.
+5. **Let users paste** it directly into Figma.
+
+Getting clipboard writes to work inside Figma’s plugin sandbox was another challenge. Some clipboard APIs are deprecated, and the behavior can be unreliable between browser versions. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After a fair amount of trial and error, I found a setup that worked reliably enough.
+
+That’s how SimpleFlow’s **“Copy Connector”** button actually functions — it generates the right Figma-encoded HTML snippet and lets Figma handle the paste natively.
+
+---
+
+## 2024 · When Figma Closed the API Door
+
+Around mid-2024, Figma tightened its API, and a lot of plugins suddenly stopped working. Developers began seeing errors like this:
+
+```js
+Error: in clone: Cloning CONNECTOR nodes is not supported in the current editor
+```
+
+A discussion on the [Figma Forum](https://forum.figma.com/ask-the-community-7/has-figma-changed-or-restricted-its-clone-function-api-43505) explained why.
+
+> “The CONNECTOR node type is specific to FigJam and should never have been allowed by the API in Figma Design…  
+> The API has now been updated to enforce this consistently.”  
+> — **ksn, Figma Community Support**
+
+That meant no more `createConnector()` calls, no more `clone()` workarounds — FigJam connectors were officially off-limits in Figma Design.
+
+Many popular plugins, including _Autoflow_ and _FlowConnect_, broke overnight. SimpleFlow, however, kept working. By that point, it didn’t rely on the API at all. Everything ran through the clipboard, and Figma still allows pasting — even if programmatic creation is blocked.
+
+That small difference — _pasting_ instead of _creating_ — turned out to be what kept SimpleFlow alive.
+
+---
+
+## Looking Back
+
+SimpleFlow began as a geometry problem and turned into a story about curiosity. Along the way, I learned a few things:
+
+- Every copy in Figma is literally a tiny `.fig` file.
+- Understanding clipboard formats can sometimes be more powerful than private APIs.
+- Simplicity scales — one well-designed button can go a long way.
+
+After five years, the plugin still does almost nothing. But it works every single day, quietly — and that feels right.
+
+Sometimes the best side projects aren’t the ones that make the most noise, but the ones that survive through every API change because you kept following a weird string that started with `fig-kiwi/`.
+
+---
+
+## References
+
+- [SimpleFlow Plugin](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere)
+- [Routing Orthogonal Connectors in JavaScript](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70)
+- [Figma createConnector() API Docs](https://developers.figma.com/docs/plugins/api/properties/figma-createconnector/)
+- [Figcomponents](https://www.figcomponents.com/)
+- [Danny Postmaa’s Tweet](https://x.com/dannypostmaa/status/1612345747495874561)
+- [Evercoder’s Clipboard Inspector](https://github.com/evercoder/clipboard-inspector)
+- [Community Thread: Write to Clipboard from Plugin](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974)
+- [Forum Thread: Connector Clone Restriction](https://forum.figma.com/ask-the-community-7/has-figma-changed-or-restricted-its-clone-function-api-43505)
+- [Evan Wallace’s .fig Parser](https://madebyevan.com/figma/fig-file-parser/)

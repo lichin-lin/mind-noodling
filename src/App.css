@@ -17,7 +17,7 @@
 }
 
 .prose h1 {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
   margin-top: 2rem;
@@ -31,7 +31,7 @@
 }
 
 .prose h2 {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
   margin-top: 1.5rem;
@@ -61,7 +61,8 @@
 }
 
 .prose p {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 400;
   margin-bottom: 1rem;
   line-height: 1.75;
   color: var(--color-text-muted-fg);
@@ -69,12 +70,14 @@
 
 .prose ul,
 .prose ol {
+  font-size: 1.05rem;
   margin-bottom: 1rem;
   padding-left: 1.5rem;
 }
 
 .prose li {
   margin-bottom: 0.5rem;
+  font-size: 1.05rem;
   line-height: 1.75;
   color: var(--color-text-muted-fg);
 }
@@ -120,12 +123,16 @@
 }
 
 .prose a {
-  color: var(--color-lnk);
+  color: var(--color-fg);
+
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-thickness: 0.08em;
+  text-decoration-color: var(--color-text-muted);
 }
 
 .prose a:hover {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  opacity: 0.7;
 }
 
 .prose blockquote {
@@ -163,6 +170,10 @@
   .prose h3 {
     font-size: 1.25rem;
   }
+}
+
+ul {
+  list-style: disc !important;
 }
 
 ol {

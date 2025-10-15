@@ -79,7 +79,11 @@ export function CodeBlock({
         lines={lines}
         words={words}
       >
-        <ReactCodeBlock.Code className={`code-block-content ${lines.length > 0 ? "with-highlight" : ""}`}>
+        <ReactCodeBlock.Code
+          className={`code-block-content ${
+            lines.length > 0 ? "with-highlight" : ""
+          }`}
+        >
           {({ isLineHighlighted }) => (
             <div
               className={`table-row ${

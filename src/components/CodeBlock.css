@@ -99,18 +99,6 @@
   background-color: rgba(127, 29, 29, 0.5);
 }
 
-.highlight-line {
-  margin-left: -14px;
-  margin-right: -16px;
-  background-color: rgba(146, 114, 49, 0.05);
-  border-left: 2px solid rgb(251, 191, 36);
-}
-
-.dark .highlight-line {
-  background-color: rgba(63, 63, 70, 0.5);
-  border-left: 2px solid rgb(251, 191, 36);
-}
-
 .line-number::before {
   display: inline-block;
   width: 1rem;
@@ -209,7 +197,8 @@ pre[class*="language-"] {
 }
 
 .code-block-content .table-row {
-  display: table-row;
+  display: block;
+  border-left: 3px solid transparent
 }
 
 .code-block-content .table-cell {
@@ -217,13 +206,10 @@ pre[class*="language-"] {
 }
 
 .code-block-content .highlight-line {
-  background-color: rgba(146, 114, 49, 0.08);
+  background-color: rgba(156, 140, 106, 0.08);
   border-left: 3px solid rgb(251, 191, 36);
-  padding-left: 0.75rem;
-  margin-left: -1rem;
 }
 
 .dark .code-block-content .highlight-line {
   background-color: rgba(63, 63, 70, 0.5);
-  border-left: 3px solid rgb(251, 191, 36);
 }

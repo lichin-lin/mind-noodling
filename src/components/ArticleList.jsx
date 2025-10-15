@@ -37,7 +37,7 @@ export function ArticleList() {
             to={`/${article.slug}`}
             className="article-link w-full px-4 py-3 rounded-lg transition-colors duration-150"
           >
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-1 mb:gap-2">
               <h2
                 className="text-base font-normal"
                 style={{ color: "var(--color-fg)" }}

@@ -15,9 +15,8 @@ export function ArticlePage() {
   // Custom components for MDX
   const components = {
     pre: (props) => {
-      // Check if this pre contains a code element
       if (props.children?.type === "code") {
-        return <CodeBlock {...props.children.props} />;
+        return <CodeBlock {...props.children.props} {...props} />;
       }
       return <pre {...props} />;
     },

@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { CodeBlock as ReactCodeBlock } from "react-code-block";
 import "./CodeBlock.css";
 
-export function CodeBlock({ children, className, ...props }) {
+export function CodeBlock({
+  children,
+  className,
+  title,
+  lines = [],
+  words = [],
+  showLineNumbers = false,
+}) {
   const [copied, setCopied] = useState(false);
-  // Extract language from className (e.g., "language-javascript")
   const language = className?.replace(/language-/, "") || "text";
 
   // Extract plain text for copy functionality
@@ -29,7 +36,7 @@ export function CodeBlock({ children, className, ...props }) {
   return (
     <div className="code-block-wrapper">
       <div className="code-block-header">
-        <span className="code-block-language">{language}</span>
+        <span className="code-block-language">{title || language}</span>
         <button
           onClick={handleCopy}
           className="code-block-copy-btn"
@@ -66,9 +73,29 @@ export function CodeBlock({ children, className, ...props }) {
           )}
         </button>
       </div>
-      <pre className={className} {...props}>
-        <code className={className}>{children}</code>
-      </pre>
+      <ReactCodeBlock
+        code={codeContent}
+        language={language}
+        lines={lines}
+        words={words}
+      >
+        <ReactCodeBlock.Code className="code-block-content">
+          {({ isLineHighlighted }) => (
+            <div
+              className={`table-row ${
+                isLineHighlighted ? "highlight-line" : ""
+              }`}
+            >
+              {showLineNumbers && (
+                <ReactCodeBlock.LineNumber className="code-block-line-number table-cell pr-4 text-sm text-right select-none" />
+              )}
+              <ReactCodeBlock.LineContent className="code-block-line-content table-cell">
+                <ReactCodeBlock.Token />
+              </ReactCodeBlock.LineContent>
+            </div>
+          )}
+        </ReactCodeBlock.Code>
+      </ReactCodeBlock>
     </div>
   );
 }

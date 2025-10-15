@@ -23,7 +23,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0.5rem 0.5rem 1rem ;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
   border-bottom: 1px solid var(--color-bd);
   background-color: var(--color-code-bg);
 }
@@ -118,4 +118,110 @@
   margin-left: -8px;
   color: var(--color-text-muted);
   content: attr(line);
+}
+
+.token-line.code-block-line-content.table-cell {
+  color: var(--color-fg) !important;
+}
+
+/* Prism syntax highlighting tokens */
+pre[class*="language-"] {
+  color: var(--color-fg);
+  margin-top: 1rem !important;
+}
+
+.token.tag,
+.token.class-name,
+.token.selector,
+.token.selector .class,
+.token.selector.class,
+.token.function {
+  color: rgb(236, 72, 153) !important; /* pink-400 */
+}
+
+.token.attr-name,
+.token.keyword,
+.token.rule,
+.token.pseudo-class,
+.token.important {
+  color: rgb(96, 165, 250) !important; /* blue-400 */
+}
+
+.token.module {
+  color: rgb(216, 180, 254) !important; /* purple-300 */
+}
+
+.token.attr-value {
+  color: rgb(96, 165, 250) !important; /* blue-400 */
+}
+
+.token.string {
+  color: rgb(253, 186, 116) !important; /* orange-300 */
+}
+
+.token.class {
+  color: rgb(94, 234, 212) !important; /* teal-300 */
+}
+
+.token.punctuation,
+.token.attr-equals {
+  color: var(--color-text-muted) !important;
+}
+
+.token.unit,
+.language-css .token.function {
+  color: rgb(186, 230, 253) !important; /* sky-200 */
+}
+
+.token.comment {
+  color: rgb(110, 231, 183) !important; /* emerald-400 */
+  opacity: 0.7 !important;
+}
+
+.token.property,
+.token.operator,
+.token.combinator {
+  color: var(--color-text-muted) !important;
+}
+
+/* react-code-block styles */
+.code-block-content {
+  display: table;
+  padding: 1rem;
+  overflow-x: auto;
+  width: 100%;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.code-block-line-number {
+  padding-right: 1rem;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.code-block-line-content {
+  width: 100%;
+}
+
+.code-block-content .table-row {
+  display: table-row;
+}
+
+.code-block-content .table-cell {
+  display: table-cell;
+}
+
+.code-block-content .highlight-line {
+  background-color: rgba(146, 114, 49, 0.08);
+  border-left: 3px solid rgb(251, 191, 36);
+  padding-left: 0.75rem;
+  margin-left: -1rem;
+}
+
+.dark .code-block-content .highlight-line {
+  background-color: rgba(63, 63, 70, 0.5);
+  border-left: 3px solid rgb(251, 191, 36);
 }

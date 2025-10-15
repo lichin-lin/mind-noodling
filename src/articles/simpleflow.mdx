@@ -59,12 +59,12 @@ And there it was.
 
 Figma writes two formats to the clipboard: `text/plain` and `text/html`. The HTML looks roughly like this:
 
-```html title="path/to/file.ts" showLineNumbers {1,3-5,7}
+```html title="index.html" lines={[3,4]} showLineNumbers
 <meta charset="utf-8" />
-<div>
-  <span data-metadata="<!--(figmeta)…(/figmeta)-->"></span>
-  <span data-buffer="<!--(figma)…(/figma)-->"></span>
-</div>
+  <div>
+    <span data-metadata="<!--(figmeta)…(/figmeta)-->"></span>
+    <span data-buffer="<!--(figma)…(/figma)-->"></span>
+  </div>
 <span style="white-space:pre-wrap;">Text</span>
 ```
 
@@ -111,7 +111,7 @@ That’s how SimpleFlow’s **“Copy Connector”** button actually functions �
 
 Around mid-2024, Figma tightened its API, and a lot of plugins suddenly stopped working. Developers began seeing errors like this:
 
-```plaintext
+```plaintext title="error.log"
 Error: in clone: Cloning CONNECTOR nodes is not supported in the current editor
 ```
 

@@ -39,7 +39,7 @@ export function ArticleList() {
           >
             <div className="flex flex-col gap-1 mb:gap-2">
               <h2
-                className="text-base font-normal"
+                className="text-base font-medium"
                 style={{ color: "var(--color-fg)" }}
               >
                 {article.title}

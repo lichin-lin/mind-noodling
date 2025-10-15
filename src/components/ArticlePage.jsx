@@ -34,7 +34,7 @@ export function ArticlePage() {
 
   return (
     <>
-      <div className="w-full max-w-3xl mx-auto py-20 px-4">
+      <div className="w-full max-w-3xl mx-auto py-12 px-4">
         <header className="mb-12">
           <time
             className="text-sm block mb-2"

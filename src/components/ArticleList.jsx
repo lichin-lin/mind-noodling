@@ -12,7 +12,7 @@ export function ArticleList() {
   };
 
   return (
-    <div className="w-full max-w-2xl px-2 pt-24 pb-20 flex flex-col gap-16">
+    <div className="w-full max-w-3xl px-2 pt-12 pb-20 flex flex-col gap-16">
       {/* Header section with title and description */}
       <header className="flex flex-col gap-3 px-2">
         <h1

@@ -165,6 +165,10 @@
   .prose h3 {
     font-size: 1.25rem;
   }
+
+  .prose p {
+    font-size: 1rem;
+  }
 }
 
 ul {

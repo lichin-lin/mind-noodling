@@ -103,7 +103,7 @@
 }
 
 .prose strong {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-fg);
 }
 
@@ -151,6 +151,10 @@
 
 .code-block > div > div {
   border-radius: 0.5rem;
+}
+
+img {
+  border-radius: 2px;
 }
 
 @media (max-width: 768px) {

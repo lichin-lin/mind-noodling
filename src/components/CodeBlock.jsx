@@ -79,7 +79,7 @@ export function CodeBlock({
         lines={lines}
         words={words}
       >
-        <ReactCodeBlock.Code className="code-block-content">
+        <ReactCodeBlock.Code className={`code-block-content ${lines.length > 0 ? "with-highlight" : ""}`}>
           {({ isLineHighlighted }) => (
             <div
               className={`table-row ${
@@ -87,7 +87,7 @@ export function CodeBlock({
               }`}
             >
               {showLineNumbers && (
-                <ReactCodeBlock.LineNumber className="code-block-line-number table-cell pr-4 text-sm text-right select-none" />
+                <ReactCodeBlock.LineNumber className="code-block-line-number table-cell pl-6 pr-4 text-sm text-right select-none text-gray-500" />
               )}
               <ReactCodeBlock.LineContent className="code-block-line-content table-cell">
                 <ReactCodeBlock.Token />

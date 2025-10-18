@@ -7,9 +7,9 @@
   --color-foreground: rgb(26, 26, 26);
   --color-foreground-dark: rgb(255, 255, 255);
   --color-muted: rgb(102, 102, 102);
-  --color-muted-dark: rgb(163, 163, 163);
+  --color-muted-dark: rgb(220, 220, 220);
   --color-muted-foreground: rgb(55, 53, 47);
-  --color-muted-foreground-dark: rgb(163, 163, 163);
+  --color-muted-foreground-dark: rgb(220, 220, 220);
   --color-border: rgb(233, 233, 231);
   --color-border-dark: rgb(55, 55, 55);
   --color-code: rgb(247, 246, 243);

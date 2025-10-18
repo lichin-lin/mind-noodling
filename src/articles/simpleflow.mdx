@@ -1,10 +1,11 @@
-import coverImage from '../assets/simpleflow/cover.png';
+import coverImage from "../assets/simpleflow/cover.png";
+import statImage from "../assets/simpleflow/stat.png";
+import clipboardImage from "../assets/simpleflow/clipboard.png";
 
 export const metadata = {
   title: "How Simpleflow was built?",
   slug: "simpleflow",
-  description:
-    "A behind-the-scenes look at building simpleflow",
+  description: "A behind-the-scenes look at building simpleflow",
   publishDate: "2025-11-01",
   tags: [],
 };
@@ -17,68 +18,74 @@ A behind-the-scenes look at building Simpleflow
 
 ---
 
-Most of us draw diagrams — flowcharts, user journeys, system maps — to explain how things work. they’re the connective tissue of ideas: boxes, arrows, and loops that make complexity easier to see.
+Most of us draw diagrams — flowcharts, user journeys, system maps — just to make sense of how things work. Boxes and arrows are the visual glue that help us see connections between ideas.
 
-Back in 2019, when [figma first opened its plugin api](https://www.figma.com/community/plugins), i had a small idea: what if it were easy to draw clean, orthogonal connectors between elements, right inside figma design?
+Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. Or worse, take a screenshot and drop it in as an image. It never felt right. The connectors looked off, and any time something changed, you had to start over.
 
-It sounded simple. it wasn’t. that idea turned into a five-year exploration — part geometry puzzle, part reverse-engineering — and eventually became [**simpleflow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
-
----
-
-## 2019–2022 · The geometry rabbit hole
-
-The first versions of simpleflow were built around one goal: **draw connectors that look tidy and don’t overlap everything.**
-
-Sounds easy, but routing lines between moving boxes is a surprisingly deep problem. What counts as a “good” route? how do you avoid messy zig-zags? how do you handle nested frames and auto-layout?
-
-I spent few months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If i’d seen [this article](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would’ve saved a lot of time — it covers most of those edge cases neatly.
-
-Then, in **April 2021**, [Figjam launched](https://www.figma.com/figjam/). It was both inspiring and humbling. Figjam’s connectors were alive — they updated automatically when you moved shapes. my plugin’s connectors were static vectors. they broke as soon as you rearranged anything.
-
-There was a `createConnector()` api, but only for Figjam, not Figma design. I tried a few experiments, but couldn’t make them feel native. Eventually i paused the project.
+Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/plugins). That suddenly made it possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn’t stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
 
 ---
 
-## 2023 · One button, big turning point
+## 2019–2022 · Figuring Out Connectors
 
-In **January 2023**, a [tweet from Danny Postmaa](https://x.com/dannypostmaa/status/1612345747495874561) mentioned [Figcomponents.com](https://www.figcomponents.com/) — a site that let you copy UI components from the web and paste them straight into Figma. That caught my eye. If the browser could paste elements into Figma, maybe that same mechanism could also paste **connectors**.
+The first versions of SimpleFlow were built around one simple goal: **draw connectors that look tidy and don’t cut through everything.**
 
-So I stripped SimpleFlow down to a single idea: **One button — “Copy Connector.”**
+It sounded straightforward, but routing lines between moving boxes turned out to be a deep problem. What counts as a “good” route? How do you avoid tangled paths or weird overlaps? And what happens when frames start nesting or auto-layout gets involved?
 
-_Click → Paste → Done_. No settings, no color pickers, no dropdowns.
+I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I’d seen [this article](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would’ve saved a lot of time — it covers most of those edge cases neatly.
 
-Usage tripled overnight. The smaller it got, the better it worked. But it also raised a new question: **What exactly am I copying when I press that button?** And that question sent me down another rabbit hole.
+Then in **April 2021**, [FigJam launched](https://www.figma.com/figjam/). Seeing its live connectors in action was a delightful moment: they moved smoothly, updated in real time, and solved exactly the kind of problem I’d been wrestling with. It was a great reference for what a “good” solution could look like.
+
+At that point, Figma’s API only supported connectors inside FigJam, but not in Figma Design. There was a `createConnector()` method, but it [didn’t work outside that environment](https://developers.figma.com/docs/plugins/api/properties/figma-createconnector/). I tried a few experiments, but none felt natural or reliable. So I decided to step back and pause the project, hoping one day the API might open up to design files too.
+
+---
+
+## 2023 · One Button, Big Turning Point
+
+In **January 2023**, a [tweet from Danny Postmaa](https://x.com/dannypostmaa/status/1612345747495874561) mentioned [Figcomponents.com](https://www.figcomponents.com/) — a site that let you copy UI components from the web and paste them straight into Figma. That immediately clicked for me: if the browser could paste components, then the same pathway might also paste FigJam connectors.
+
+With that in mind, I simplified SimpleFlow into a single idea: **Copy Connector → Paste → Done.** No settings, no color pickers, no dropdowns — just one simple action that worked.
+
+Long story short, after launch the plugin’s usage grew **more than 10x in six months**. You might be wondering: _how did you make it?_ To make it work I had to dig into how the browser writes data to the clipboard and how Figma reads it back on paste.
+
+<img src={statImage} alt="Simpleflow stat 22-23" />
 
 ---
 
 ## Opening the Clipboard
 
-To understand what was happening, I did something simple: I drew a connector in FigJam, pressed **Cmd/Ctrl + C**, and opened a clipboard viewer.
+You might think — just write the connector data to the clipboard. I’d already saved a static file in the plugin; the real question was **what exactly should go in it**.
 
-At first, nothing looked unusual — just empty text fields. Most clipboard tools only show `text/plain`. So I tried [Evercoder’s Clipboard Inspector](https://github.com/evercoder/clipboard-inspector), which exposes every format (`text/html`, `image/png`, etc.).
+<img src="{clipboardImage}" alt="Clipboard Inspector" />
 
-And there it was.
+When I tried pasting into Apple Notes, nothing showed up, which told me I wasn’t writing the right thing. Using [Evercoder’s Clipboard Inspector](https://github.com/evercoder/clipboard-inspector) I could finally see all clipboard formats, and that’s where it clicked: Figma isn’t using plain text, it’s writing **rich `text/html`** with two special attributes — `data-metadata` and `data-buffer`.
 
-Figma writes two formats to the clipboard: `text/plain` and `text/html`. The HTML looks roughly like this:
-
-```html title="index.html" lines={[3,4]} showLineNumbers
+```html
 <meta charset="utf-8" />
-  <div>
-    <span data-metadata="<!--(figmeta)…(/figmeta)-->"></span>
-    <span data-buffer="<!--(figma)…(/figma)-->"></span>
-  </div>
+<div>
+  <span data-metadata="<!--(figmeta)eyJm[...]9Cg==(/figmeta)-->"></span>
+  <span data-buffer="<!--(figma)ZmlnLW[...]ff/AA==(/figma)-->"></span>
+</div>
 <span style="white-space:pre-wrap;">Text</span>
 ```
 
-`data-metadata` is a short, Base64-encoded JSON string — easy to decode with `JSON.parse(atob(...))`. However, `data-buffer` is long — sometimes over 25,000 characters — and decoding it gives you a binary blob that begins with fig-kiwi.
+`data-metadata` starts with eyJ, which gives away that it’s Base64-encoded JSON; decoding with `JSON.parse(atob(...))` yields something like:
 
-That prefix was the clue — a small but critical hint that revealed how Figma stores copied data internally.
+```JSON
+{
+  "fileKey": "4XvKUK38NtRPZASgUJiZ87",
+  "pasteID": 1261442360,
+  "dataType": "scene"
+}
+```
+
+The real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data.
+
+That fig-kiwi string turned out to be Figma’s internal Kiwi forma (created by co-founder & former CTO Evan Wallace) the same schema used to encode `.fig` files. So what I needed to store wasn’t just vector data; it was a tiny .fig file encoded into the clipboard’s HTML.
 
 ---
 
-## Discovering _fig-kiwi_
-
-After some digging, I found [Evan Wallace’s public .fig parser](https://madebyevan.com/figma/fig-file-parser/) and an article explaining how Figma handles clipboard data. It turns out that _Kiwi_ is Figma’s internal message format — a binary schema used to encode `.fig` files.
+## Decode fig-kiwi
 
 That means every time you copy something in Figma, here’s what actually happens:
 

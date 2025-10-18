@@ -1,6 +1,6 @@
 import coverImage from "../assets/simpleflow/cover.png";
 import statImage from "../assets/simpleflow/stat.png";
-import clipboardImage from "../assets/simpleflow/clipboard.png";
+import clipboardInsImage from "../assets/simpleflow/inspector.png";
 
 export const metadata = {
   title: "How Simpleflow was built?",
@@ -56,9 +56,9 @@ Long story short, after launch the plugin’s usage grew **more than 10x in six 
 
 You might think — just write the connector data to the clipboard. I’d already saved a static file in the plugin; the real question was **what exactly should go in it**.
 
-<img src="{clipboardImage}" alt="Clipboard Inspector" />
-
 When I tried pasting into Apple Notes, nothing showed up, which told me I wasn’t writing the right thing. Using [Evercoder’s Clipboard Inspector](https://github.com/evercoder/clipboard-inspector) I could finally see all clipboard formats, and that’s where it clicked: Figma isn’t using plain text, it’s writing **rich `text/html`** with two special attributes — `data-metadata` and `data-buffer`.
+
+<img src={clipboardInsImage} alt="Inspector" />
 
 ```html
 <meta charset="utf-8" />
@@ -69,7 +69,7 @@ When I tried pasting into Apple Notes, nothing showed up, which told me I wasn�
 <span style="white-space:pre-wrap;">Text</span>
 ```
 
-`data-metadata` starts with eyJ, which gives away that it’s Base64-encoded JSON; decoding with `JSON.parse(atob(...))` yields something like:
+`data-metadata` starts with **eyJ**, which gives away that it’s Base64-encoded JSON; decoding with `JSON.parse(atob(...))` yields something like:
 
 ```JSON
 {
@@ -81,7 +81,7 @@ When I tried pasting into Apple Notes, nothing showed up, which told me I wasn�
 
 The real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data.
 
-That fig-kiwi string turned out to be Figma’s internal Kiwi forma (created by co-founder & former CTO Evan Wallace) the same schema used to encode `.fig` files. So what I needed to store wasn’t just vector data; it was a tiny .fig file encoded into the clipboard’s HTML.
+That fig-kiwi string turned out to be Figma’s internal Kiwi format (created by co-founder & former CTO Evan Wallace) the same schema used to encode `.fig` files. So what I needed to store wasn’t just vector data; it was a tiny .fig file encoded into the clipboard’s HTML.
 
 ---
 

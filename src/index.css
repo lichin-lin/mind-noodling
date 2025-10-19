@@ -39,6 +39,7 @@
   /* Set default light mode colors */
   --color-bg: var(--color-background);
   --color-fg: var(--color-foreground);
+  --color-border-default: var(--color-border);
   --color-text-muted: var(--color-muted);
   --color-text-muted-fg: var(--color-muted-foreground);
   --color-bd: var(--color-border);

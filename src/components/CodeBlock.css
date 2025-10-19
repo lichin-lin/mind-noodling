@@ -145,7 +145,11 @@ pre[class*="language-"] {
 }
 
 .token.string {
-  color: rgb(253, 186, 116) !important; /* orange-300 */
+  color: rgb(238, 158, 73) !important; /* orange-300 */
+}
+
+.token.number {
+  color: rgb(139, 193, 110) !important;
 }
 
 .token.class {

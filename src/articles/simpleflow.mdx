@@ -6,6 +6,7 @@ import RoutingOrthogonalDiagramImage from "../assets/simpleflow/Routing Orthogon
 import sf2019 from "../assets/simpleflow/sf-2019.mp4";
 import sf2023 from "../assets/simpleflow/sf-2023.mp4";
 import sf2025 from "../assets/simpleflow/sf-2025.mp4";
+import figFileInspector from '../assets/simpleflow/fig-file-inspector.mp4';
 
 export const metadata = {
   title: "How Simpleflow was built?",
@@ -123,7 +124,9 @@ TBD - from figma elements encodes into .fig(fig-kiwi hash)
 this got insert into data-buffer
 ```
 
-You can also test this yourself: try to create a new figma file, save it and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see a miniature Figma file, complete with nodes and styles.
+You can also test this yourself: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see a miniature Figma file, complete with nodes and styles.
+
+<Video src={figFileInspector} />
 
 At first, this approach might seem overcomplicated, but there’s a good reason for it. As [Alex Harri explains in his article on clipboard formats](https://alexharri.com/blog/clipboard), browsers have to translate data between web and operating system clipboard APIs, and each OS supports only a few “standard” formats — like plain text, HTML, and PNG. Custom types (like Figma’s internal format) don’t map cleanly across apps.
 

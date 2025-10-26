@@ -21,31 +21,31 @@ export function ArticleList() {
             A collection of experiments and notes by Lichin, exploring design,
             code, and the small details that make tools feel good to use.
           </p>
-        </div>
-        <div className="flex gap-2">
-          <a
-            href="https://designtips.today"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm inline-flex items-center gap-1 hover:opacity-70 transition-opacity w-fit color-[var(--color-text)]! underline! underline-offset-1! underline-[var(--color-text-muted)]!"
-          >
-            designtips.today
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          <div className="flex gap-2">
+            <a
+              href="https://designtips.today"
+              target="_blank"
+              rel="noopener noreferrer"
+              // className="text-sm inline-flex items-center gap-1 hover:opacity-70 transition-opacity w-fitunderline! underline-offset-1! underline-[var(--color-text-muted)]!"
             >
-              <path
-                d="M3.5 2.5H9.5M9.5 2.5V8.5M9.5 2.5L2.5 9.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
+              designtips.today
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3.5 2.5H9.5M9.5 2.5V8.5M9.5 2.5L2.5 9.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
       </header>
       {/* divider */}
@@ -59,12 +59,7 @@ export function ArticleList() {
             className="article-link w-full px-4 py-3 rounded-lg transition-colors duration-150"
           >
             <div className="flex flex-col gap-1 mb:gap-2">
-              <h2
-                className="text-base font-medium"
-                style={{ color: "var(--color-fg)" }}
-              >
-                {article.title}
-              </h2>
+              <h6 className="my-0!">{article.title}</h6>
 
               <time
                 className="text-sm font-normal"

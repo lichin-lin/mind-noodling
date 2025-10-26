@@ -5,6 +5,7 @@ import diagramImage from "../assets/simpleflow/diagram.png";
 import RoutingOrthogonalDiagramImage from "../assets/simpleflow/Routing Orthogonal Diagram.png";
 import sf2019 from "../assets/simpleflow/sf-2019.mp4";
 import sf2023 from "../assets/simpleflow/sf-2023.mp4";
+import sf2025 from "../assets/simpleflow/sf-2025.mp4";
 
 export const metadata = {
   title: "How Simpleflow was built?",
@@ -119,15 +120,17 @@ By storing data as `text/html`, Figma ensures that the clipboard contents are re
 
 Follow the same process, the plugin can now generate connectors dynamically: adjusting color, stroke width, or corner rounding. I could even **create connector types that aren’t available in Figma’s official UI**. Because the plugin builds connectors directly at the data level, it offers far more precise control without the usual editor limitations.
 
+<Video src={sf2025} />
+
 Getting clipboard writes to behave inside Figma’s plugin sandbox was still tricky. Some clipboard APIs are deprecated, and browser behavior can be inconsistent. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After plenty of trial and error, I found a setup stable enough to rely on.
 
-That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid connector file, encodes it the same way Figma does, and lets Figma handle the paste natively.
+That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid element schema, encodes it the same way Figma does, save the data into Clipboard, and relys on Figma to handle the paste natively.
 
 ---
 
 ## 2025 · When Figma Closed the API Door
 
-Around mid-2025, Figma tightened its API, and a lot of plugins suddenly stopped working. Developers began seeing errors like this:
+Around mid-2025, Figma tightened its API. Developers began seeing errors like this:
 
 ```plaintext title="error.log"
 Error: in clone: Cloning CONNECTOR nodes is not supported in the current editor
@@ -136,9 +139,9 @@ Error: in clone: Cloning CONNECTOR nodes is not supported in the current editor
 > “The CONNECTOR node type is specific to FigJam and should never have been allowed by the API in Figma Design… The API has now been updated to enforce this consistently.”  
 > — **ksn, Figma Community Support**
 
-A discussion on the [Figma Forum](https://forum.figma.com/ask-the-community-7/has-figma-changed-or-restricted-its-clone-function-api-43505) explained that no more `createConnector()` calls and no more `clone()` workarounds, FigJam connectors were officially off-limits inside Figma Design. Many popular plugins broke overnight. SimpleFlow, however, kept working.
+A discussion on the [Figma Forum](https://forum.figma.com/ask-the-community-7/has-figma-changed-or-restricted-its-clone-function-api-43505) explains that no more `createConnector()` calls and `clone()` workarounds, FigJam connectors were officially off-limits inside Figma Design. Many popular plugins broke overnight. SimpleFlow, however, kept working.
 
-Both approaches were technically programmatic: one used Figma’s API to create connectors directly on the canvas, while mine **generated the same connector data into the clipboard** instead. Users still had to press hotkey **Cmd/Ctrl + V** to paste it, but since Figma treats paste as a valid action, it remained supported. That small difference was enough to keep the plugin alive.
+Both approaches were technically programmatic: one used Figma’s API to create connectors directly, while mine **generated the connector via actual element schema** instead. Users still had to press hotkey **Cmd/Ctrl + V** to paste it from Clipboard, but since Figma treats paste as a valid action, it remained supported. That small difference was enough to keep the plugin alive.
 
 ---
 

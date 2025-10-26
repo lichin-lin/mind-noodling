@@ -53,11 +53,11 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: 2 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -2 }}
+        initial={{ opacity: 0, y: 1, filter: "blur(1px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        exit={{ opacity: 0, y: -1, filter: "blur(1px)" }}
         transition={{
-          duration: 0.3,
+          duration: 0.25,
           ease: "easeInOut",
         }}
         className="min-h-screen flex flex-col items-center transition-colors duration-300 pt-16"

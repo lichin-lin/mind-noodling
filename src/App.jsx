@@ -8,6 +8,7 @@ import {
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ArticleList } from "./components/ArticleList";
 import { ArticlePage } from "./components/ArticlePage";
+import { AnimatePresence, motion } from "framer-motion";
 import "./App.css";
 
 function Header() {
@@ -45,17 +46,36 @@ function Header() {
   );
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 2 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -2 }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+        className="min-h-screen flex flex-col items-center transition-colors duration-300 pt-16"
+      >
+        <Routes location={location}>
+          <Route path="/" element={<ArticleList />} />
+          <Route path="/:slug" element={<ArticlePage />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter basename="/">
       <Header />
-
-      <div className="min-h-screen flex flex-col items-center transition-colors duration-300 pt-16">
-        <Routes>
-          <Route path="/" element={<ArticleList />} />
-          <Route path="/:slug" element={<ArticlePage />} />
-        </Routes>
-      </div>
+      <AnimatedRoutes />
     </BrowserRouter>
   );
 }

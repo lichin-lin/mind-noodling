@@ -72,9 +72,9 @@ Long story short, after launch the plugin’s usage grew **almost 8x in six mont
 
 ## Opening the Clipboard
 
-You might think — just write the connector data to the clipboard. I’d already saved a static file in the plugin; the real question was **what exactly should go in it**.
+At first, I thought it'd be simple — just write the connector data to the clipboard, right? I already had a static file saved in the plugin, but the tricky part was figuring out **what format it needed to be in**.
 
-When I tried pasting into Apple Notes, nothing showed up, which told me I wasn’t writing the right thing. Using [Evercoder’s Clipboard Inspector](https://github.com/evercoder/clipboard-inspector) I could finally see all clipboard formats, and that’s where it clicked: Figma isn’t using plain text, it’s writing **rich `text/html`** with two special attributes — `data-metadata` and `data-buffer`.
+So I tried pasting the connector into VS Code and Apple Notes to see what would happen. Nothing showed up. That's when I knew something was off. I grabbed [Evercoder's Clipboard Inspector](https://github.com/evercoder/clipboard-inspector) and finally got to peek under the hood at what Figma was actually putting on the clipboard. And that's when it all made sense: Figma wasn't using plain text at all — it was writing **rich `text/html`** with two special attributes tucked inside: `data-metadata` and `data-buffer`.
 
 <img src={clipboardInsImage} alt="Inspector" />
 
@@ -97,9 +97,9 @@ When I tried pasting into Apple Notes, nothing showed up, which told me I wasn�
 }
 ```
 
-The real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data.
+And the real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data.
 
-That fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace) the same schema used to encode `.fig` files. So what I needed to store wasn’t just vector data; it was a tiny .fig file encoded into the clipboard.
+That fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace) the same schema used to encode Figma files. So what I needed to store wasn’t just vector data; it was a tiny `.fig` file encoded into the clipboard.
 
 ---
 

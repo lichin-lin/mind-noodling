@@ -16,7 +16,7 @@ export function ArticleList() {
       {/* Header section with title and description */}
       <header className="flex flex-col gap-3 px-2">
         <div className="article-list-header">
-          <h1>Mind noodling</h1>
+          <h1>Mind Noodling</h1>
           <p>
             A collection of experiments and notes by Lichin, exploring design,
             code, and the small details that make tools feel good to use.

@@ -10,14 +10,16 @@ import sf2025 from "../assets/simpleflow/sf-2025.mp4";
 export const metadata = {
   title: "How Simpleflow was built?",
   slug: "simpleflow",
-  description: "A behind-the-scenes look at building Figma plugin Simpleflow",
+  description: "From geometry algorithms to clipboard hacking: the story behind a Figma plugin",
   publishDate: "2025-11-01",
   tags: [],
 };
 
 # How Simpleflow was built?
 
-A behind-the-scenes look at building Figma plugin Simpleflow
+From geometry algorithms to clipboard hacking: the story behind a Figma plugin
+
+<p className="time" dateTime="2025-11-01">November 1, 2025</p>
 
 <img src={coverImage} alt="Simpleflow cover" />
 
@@ -124,7 +126,7 @@ Follow the same process, the plugin can now generate connectors dynamically: adj
 
 Getting clipboard writes to behave inside Figma’s plugin sandbox was still tricky. Some clipboard APIs are deprecated, and browser behavior can be inconsistent. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After plenty of trial and error, I found a setup stable enough to rely on.
 
-That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid element schema, encodes it the same way Figma does, save the data into Clipboard, and relys on Figma to handle the paste natively.
+That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid element schema, encodes it the same way Figma does, save the data into Clipboard, and relies on Figma to handle the paste natively.
 
 ---
 

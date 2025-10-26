@@ -1,3 +1,1 @@
-# 🍜
-
-Thoughts on building interfaces, crafting interactions, and making tools that don't suck.
+A collection of experiments and notes by Lichin, exploring design, code, and the small details that make tools feel good to use.

@@ -1,6 +1,18 @@
 import { useParams, Navigate } from "react-router-dom";
 import { articles } from "../articles";
 import { CodeBlock } from "./CodeBlock";
+import {
+  Tweet,
+  CodePen,
+  CodeSandbox,
+  Instagram,
+  LinkedIn,
+  GitHub,
+  YouTube,
+  Vimeo,
+  Gist,
+  Figma,
+} from "mdx-embed";
 
 export function ArticlePage() {
   const { slug } = useParams();
@@ -20,6 +32,16 @@ export function ArticlePage() {
       }
       return <pre {...props} />;
     },
+    Tweet,
+    CodePen,
+    CodeSandbox,
+    Instagram,
+    LinkedIn,
+    GitHub,
+    YouTube,
+    Vimeo,
+    Gist,
+    Figma,
   };
 
   const formatDate = (dateString) => {

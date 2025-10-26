@@ -2,18 +2,19 @@ import coverImage from "../assets/simpleflow/cover.png";
 import statImage from "../assets/simpleflow/stat.png";
 import clipboardInsImage from "../assets/simpleflow/inspector.png";
 import diagramImage from "../assets/simpleflow/diagram.png";
+import RoutingOrthogonalDiagramImage from "../assets/simpleflow/Routing Orthogonal Diagram.png";
 
 export const metadata = {
   title: "How Simpleflow was built?",
   slug: "simpleflow",
-  description: "A behind-the-scenes look at building simpleflow",
+  description: "A behind-the-scenes look at building Figma plugin Simpleflow",
   publishDate: "2025-11-01",
   tags: [],
 };
 
 # How Simpleflow was built?
 
-A behind-the-scenes look at building Simpleflow
+A behind-the-scenes look at building Figma plugin Simpleflow
 
 <img src={coverImage} alt="Simpleflow cover" />
 
@@ -26,7 +27,7 @@ Most of us draw diagrams just to make sense of how things work. Boxes and arrows
   <figcaption>A diagram draw by Rasmus Andersson</figcaption>
 </figure>
 
-Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. Or worse, take a screenshot and drop it in as an image. It never felt right. The connectors looked off, and any time something changed, you had to start over.
+Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. Or worse, take a screenshot and drop it in as an image. It never felt right. The connectors looked off, and any time something changed, you had to modify context again.
 
 Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/plugins). That suddenly made it possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn’t stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
 
@@ -36,9 +37,17 @@ Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/
 
 The first versions of SimpleFlow were built around one simple goal: **draw connectors that look tidy and don’t cut through everything.**
 
-It sounded straightforward, but routing lines between moving boxes turned out to be a deep problem. What counts as a “good” route? How do you avoid tangled paths or weird overlaps? And what happens when frames start nesting or auto-layout gets involved?
+It sounded straightforward, but routing lines between moving boxes turned out to be a deep problem. What counts as a "good" route? How do you avoid tangled paths or weird overlaps? And what happens when frames start nesting or auto-layout gets involved?
 
-I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I’d seen [this article](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would’ve saved a lot of time — it covers most of those edge cases neatly.
+<Tweet tweetId="1185574433026494464" />
+
+I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I'd seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would've saved a lot of time!
+I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I’d seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would’ve saved a lot of time!
+
+<figure>
+  <img src={RoutingOrthogonalDiagramImage} alt="Simpleflow stat 22-23" />
+  <figcaption>A deep dive that covers most of those edge cases neatly (2020)</figcaption>
+</figure>
 
 Then in **April 2021**, [FigJam launched](https://www.figma.com/figjam/). Seeing its live connectors in action was a delightful moment: they moved smoothly, updated in real time, and solved exactly the kind of problem I’d been wrestling with. It was a great reference for what a “good” solution could look like.
 

@@ -125,35 +125,36 @@ That’s how SimpleFlow’s **Copy Connector** button actually works, it assembl
 
 ---
 
-## 2024 · When Figma Closed the API Door
+## 2025 · When Figma Closed the API Door
 
-Around mid-2024, Figma tightened its API, and a lot of plugins suddenly stopped working. Developers began seeing errors like this:
+Around mid-2025, Figma tightened its API, and a lot of plugins suddenly stopped working. Developers began seeing errors like this:
 
 ```plaintext title="error.log"
 Error: in clone: Cloning CONNECTOR nodes is not supported in the current editor
 ```
 
-A discussion on the [Figma Forum](https://forum.figma.com/ask-the-community-7/has-figma-changed-or-restricted-its-clone-function-api-43505) explained why:
-
 > “The CONNECTOR node type is specific to FigJam and should never have been allowed by the API in Figma Design… The API has now been updated to enforce this consistently.”  
 > — **ksn, Figma Community Support**
 
-That meant no more `createConnector()` calls and no more `clone()` workarounds — FigJam connectors were officially off-limits inside Figma Design. Many popular plugins broke overnight. SimpleFlow, however, kept working.
+A discussion on the [Figma Forum](https://forum.figma.com/ask-the-community-7/has-figma-changed-or-restricted-its-clone-function-api-43505) explained that no more `createConnector()` calls and no more `clone()` workarounds, FigJam connectors were officially off-limits inside Figma Design. Many popular plugins broke overnight. SimpleFlow, however, kept working.
 
-Both approaches were technically programmatic: one used Figma’s API to create connectors directly on the canvas, while mine **generated the same connector data into the clipboard** instead. Users still had to press **Cmd + V** to paste it, but since Figma treats paste as a valid action, it remained perfectly supported. That small difference was enough to keep the plugin alive.
+Both approaches were technically programmatic: one used Figma’s API to create connectors directly on the canvas, while mine **generated the same connector data into the clipboard** instead. Users still had to press hotkey **Cmd/Ctrl + V** to paste it, but since Figma treats paste as a valid action, it remained supported. That small difference was enough to keep the plugin alive.
 
 ---
 
 ## Looking Back
 
-SimpleFlow began as a geometry problem and turned into a story about curiosity. Along the way, I learned a few things:
+What began as a weekend experiment to route lines around boxes turned into an unexpected API journey. When geometry got tricky and the Figma API reached its limits, curiosity led me to explore how copy-paste actually works — and that turned out to be the better path.
 
-1. Every copy in Figma is literally a tiny `.fig` file.
-2. Understanding clipboard formats can sometimes be more powerful than private APIs.
-3. Simplicity scales — one well-designed button can go a long way.
+Along the way, I learned a few things:
 
-After five years, the plugin still does just one thing, but it works every single day. What started as a small experiment taught me how deep even a simple **Cmd/Ctrl + C** can go, and how smart these tools really are under the hood. I’m glad SimpleFlow gave me the space to learn that also carried into [other plugins I’ve built too](https://www.figma.com/@lichin).
+Every copy in Figma is essentially a tiny .fig file.
 
+Understanding clipboard formats can sometimes be more powerful than private APIs.
+
+Simplicity scales — one well-designed button can go a long way.
+
+Today, SimpleFlow quietly helps creators turn their ideas into clear diagrams inside Figma. I’m glad that a small weekend project taught me so much — lessons that have carried into every other plugin I’ve built since.
 ---
 
 ## References

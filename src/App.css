@@ -157,6 +157,7 @@
 img {
   border-radius: 8px;
   border: 1px solid var(--color-bd);
+  margin: 2.5rem 0;
 }
 
 @media (max-width: 768px) {
@@ -187,7 +188,7 @@ ol {
 
 
 figure {
-  margin: 2rem 0;
+  margin: 2.5rem 0;
   text-align: center;
 }
 
@@ -200,7 +201,7 @@ figcaption {
 
 /* Video Component Styles */
 .video-wrapper {
-  margin: 1.5rem 0;
+  margin: 2.5rem 0;
 }
 
 .video-container {

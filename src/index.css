@@ -172,17 +172,26 @@ p {
   font-weight: 400;
   margin-bottom: 1rem;
   line-height: 1.5;
-  color: var(--color-text-muted-fg);
+  color: var(--color-text-muted);
   text-wrap: balance;
+  opacity: 0.9;
 }
 
 .article-list-header a {
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-text-muted);
   text-decoration: underline;
   text-underline-offset: 0.1em;
   display: inline-flex;
+  opacity: 0.9;
 
   align-items: center;
   font-size: 0.9rem;
+}
+
+.article-list time {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-weight: 400;
+  color: var(--color-text-muted);
 }

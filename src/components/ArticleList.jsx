@@ -12,7 +12,7 @@ export function ArticleList() {
   };
 
   return (
-    <div className="w-full max-w-3xl px-2 pt-12 pb-20 flex flex-col gap-8">
+    <div className="article-list w-full max-w-3xl px-2 pt-12 pb-20 flex flex-col gap-8">
       {/* Header section with title and description */}
       <header className="flex flex-col gap-3 px-2">
         <div className="article-list-header">
@@ -26,7 +26,6 @@ export function ArticleList() {
               href="https://designtips.today"
               target="_blank"
               rel="noopener noreferrer"
-              // className="text-sm inline-flex items-center gap-1 hover:opacity-70 transition-opacity w-fitunderline! underline-offset-1! underline-[var(--color-text-muted)]!"
             >
               designtips.today
               <svg
@@ -61,11 +60,7 @@ export function ArticleList() {
             <div className="flex flex-col gap-1 mb:gap-2">
               <h6 className="my-0!">{article.title}</h6>
 
-              <time
-                className="text-sm font-normal"
-                style={{ color: "var(--color-text-muted)" }}
-                dateTime={article.publishDate}
-              >
+              <time dateTime={article.publishDate}>
                 {formatDate(article.publishDate)}
               </time>
             </div>

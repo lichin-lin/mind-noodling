@@ -39,17 +39,16 @@ The first versions of SimpleFlow were built around one simple goal: **draw conne
 
 It sounded straightforward, but routing lines between moving boxes turned out to be a deep problem. What counts as a "good" route? How do you avoid tangled paths or weird overlaps? And what happens when frames start nesting or auto-layout gets involved?
 
-<Tweet tweetId="1185574433026494464" />
+<Tweet id="1185574433026494464" />
 
 I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I'd seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would've saved a lot of time!
-I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I’d seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would’ve saved a lot of time!
 
 <figure>
   <img src={RoutingOrthogonalDiagramImage} alt="Simpleflow stat 22-23" />
   <figcaption>A deep dive that covers most of those edge cases neatly (2020)</figcaption>
 </figure>
 
-Then in **April 2021**, [FigJam launched](https://www.figma.com/figjam/). Seeing its live connectors in action was a delightful moment: they moved smoothly, updated in real time, and solved exactly the kind of problem I’d been wrestling with. It was a great reference for what a “good” solution could look like.
+Then in **April 2021**, [FigJam launched](https://www.figma.com/figjam/). Seeing its live connectors in action was a delightful moment: they updated in real time and solved exactly the kind of problem I’d been wrestling with. It was a reference for what a “good” solution could look like.
 
 At that point, Figma’s API only supported connectors inside FigJam, but not in Figma Design. There was a `createConnector()` method, but it [didn’t work outside that environment](https://developers.figma.com/docs/plugins/api/properties/figma-createconnector/). I tried a few experiments, but none felt natural or reliable. So I decided to step back and pause the project, hoping one day the API might open up to design files too.
 
@@ -57,11 +56,13 @@ At that point, Figma’s API only supported connectors inside FigJam, but not in
 
 ## 2023 · One Button, Big Turning Point
 
-In **January 2023**, a [tweet from Danny Postmaa](https://x.com/dannypostmaa/status/1612345747495874561) mentioned [Figcomponents.com](https://www.figcomponents.com/) — a site that let you copy UI components from the web and paste them straight into Figma. That immediately clicked for me: if the browser could paste components, then the same pathway might also paste FigJam connectors.
+In **January 2023**, [Danny Postmaa tweets about Figcomponents.com](https://x.com/dannypostmaa/status/1612345747495874561) — a [site](https://www.figcomponents.com/) that let you copy UI components from the web and paste them straight into Figma. That immediately clicked for me: if the browser could paste components, then the same pathway might also paste FigJam connectors.
 
 With that in mind, I simplified SimpleFlow into a single idea: **Copy Connector → Paste → Done.** No settings, no color pickers, no dropdowns — just one simple action that worked.
 
-Long story short, after launch the plugin’s usage grew **more than 10x in six months**. You might be wondering: _how did you make it?_ To make it work I had to dig into how the browser writes data to the clipboard and how Figma reads it back on paste.
+<Tweet id="1614585537226231810" />
+
+Long story short, after launch the plugin’s usage grew **almost 8x in six months**. You might be wondering: _how did you make it?_ To make it work I had to dig into how the browser writes data to the clipboard and how Figma reads it back on paste.
 
 <img src={statImage} alt="Simpleflow stat 22-23" />
 

@@ -3,6 +3,8 @@ import statImage from "../assets/simpleflow/stat.png";
 import clipboardInsImage from "../assets/simpleflow/inspector.png";
 import diagramImage from "../assets/simpleflow/diagram.png";
 import RoutingOrthogonalDiagramImage from "../assets/simpleflow/Routing Orthogonal Diagram.png";
+import sf2019 from "../assets/simpleflow/sf-2019.mp4";
+import sf2023 from "../assets/simpleflow/sf-2023.mp4";
 
 export const metadata = {
   title: "How Simpleflow was built?",
@@ -39,7 +41,7 @@ The first versions of SimpleFlow were built around one simple goal: **draw conne
 
 It sounded straightforward, but routing lines between moving boxes turned out to be a deep problem. What counts as a "good" route? How do you avoid tangled paths or weird overlaps? And what happens when frames start nesting or auto-layout gets involved?
 
-<Tweet id="1185574433026494464" />
+<Video src={sf2019} />
 
 I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I'd seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would've saved a lot of time!
 
@@ -58,9 +60,9 @@ At that point, Figma’s API only supported connectors inside FigJam, but not in
 
 In **January 2023**, [Danny Postmaa tweets about Figcomponents.com](https://x.com/dannypostmaa/status/1612345747495874561) — a [site](https://www.figcomponents.com/) that let you copy UI components from the web and paste them straight into Figma. That immediately clicked for me: if the browser could paste components, then the same pathway might also paste FigJam connectors.
 
-With that in mind, I simplified SimpleFlow into a single idea: **Copy Connector → Paste → Done.** No settings, no color pickers, no dropdowns — just one simple action that worked.
+With that in mind, I simplified SimpleFlow into a single idea: **Copy Connector → Paste → Done.** No extra settings or UI controls, just one simple action that worked.
 
-<Tweet id="1614585537226231810" />
+<Video src={sf2023} />
 
 Long story short, after launch the plugin’s usage grew **almost 8x in six months**. You might be wondering: _how did you make it?_ To make it work I had to dig into how the browser writes data to the clipboard and how Figma reads it back on paste.
 

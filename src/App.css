@@ -197,3 +197,59 @@ figcaption {
   opacity: 0.7;
   color: var(--color-text-muted);
 }
+
+/* Video Component Styles */
+.video-wrapper {
+  margin: 1.5rem 0;
+}
+
+.video-container {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-bd);
+  background-color: var(--color-code-bg);
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Tweet Component Styles */
+.tweet-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.tweet-container {
+  width: 100%;
+  max-width: 550px;
+}
+
+/* Warning/Error Styles */
+.component-warning {
+  padding: 1rem;
+  border: 1px solid #fbbf24;
+  background-color: #fef3c7;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.dark .component-warning {
+  background-color: rgba(251, 191, 36, 0.2);
+  border-color: #92400e;
+}
+
+.component-warning p {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin: 0;
+}
+
+.dark .component-warning p {
+  color: #fcd34d;
+}

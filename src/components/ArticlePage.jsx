@@ -2,6 +2,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { articles } from "../articles";
 import { CodeBlock } from "./CodeBlock";
 import { Tweet } from "./Tweet";
+import { Video } from "./Video";
 
 export function ArticlePage() {
   const { slug } = useParams();
@@ -22,6 +23,7 @@ export function ArticlePage() {
       return <pre {...props} />;
     },
     Tweet,
+    Video,
   };
 
   const formatDate = (dateString) => {

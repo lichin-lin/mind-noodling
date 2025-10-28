@@ -9,7 +9,7 @@ import sf2025 from "../assets/simpleflow/sf-2025.mp4";
 import figFileInspector from "../assets/simpleflow/fig-file-inspector.mp4";
 
 export const metadata = {
-  title: "How Simpleflow was built?",
+  title: "How Simpleflow Was Built",
   slug: "simpleflow",
   description:
     "From geometry algorithms to clipboard hacking: the story behind a Figma plugin",
@@ -22,7 +22,7 @@ export const metadata = {
 </p>
 
 <div className="article-page-header">
-# How Simpleflow was built?
+# How Simpleflow Was Built
 
 From geometry algorithms to clipboard hacking: the story behind a Figma plugin
 
@@ -135,7 +135,9 @@ By storing encoded data as `text/html`, Figma ensures that the clipboard content
 
 ### Back to the plugin
 
-Follow the same process, the plugin can now generate connectors dynamically: adjusting color, stroke width, or corner rounding. It can even **create connector types that aren’t available in Figma’s official UI**. Because the plugin builds connectors directly at the data level, it offers far more precise control without the usual editor limitations:
+Once I understood how fig-kiwi and clipboard encoding worked, I could finally rebuild SimpleFlow from the inside out.
+
+Following the same process, the plugin can now generate connectors dynamically: adjusting color, stroke width, or corner rounding. It can even **create connector types that aren’t available in Figma’s official UI**. Because the plugin builds connectors directly at the data level, it offers far more precise control without the usual editor limitations:
 
 ```JSON
 /**

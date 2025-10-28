@@ -128,7 +128,11 @@ You can also test this yourself: try to create a new figma file, save and upload
 <Video src={figFileInspector} />
 
 ```TBD
-我覺得這裡少了一點什麼
+我覺得這裡少了一點什麼:
+1. 先生成 json
+2. 用 kiwi-schema encode
+3. 再次 encode 成 base64
+4. ...
 ```
 
 At first, this approach might seem overcomplicated, but there’s a good reason for it. As [Alex Harri explains in his article on clipboard formats](https://alexharri.com/blog/clipboard), browsers have to translate data between web and operating system clipboard APIs, and each OS supports only a few “standard” formats, like plain text, HTML, and PNG. Custom types (like Figma’s internal format) don’t map cleanly across apps.

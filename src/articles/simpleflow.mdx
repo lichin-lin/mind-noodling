@@ -39,7 +39,7 @@ Most of us draw diagrams just to make sense of how things work. Boxes and arrows
   <figcaption>A diagram draw by Rasmus Andersson</figcaption>
 </figure>
 
-Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. Or worse, take a screenshot and drop it in as an image. It never felt right. The connectors looked off, and any time something changed, you had to modify context again.
+Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. The connectors looked off, and any time something changed, you had to modify context again.
 
 Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/plugins). That suddenly made it possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn’t stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
 
@@ -74,7 +74,7 @@ In **January 2023**, [Danny Postmaa tweets about Figcomponents.com](https://x.co
 
 With that in mind, I simplified SimpleFlow into a single idea: **Copy Connector → Paste → Done.** No extra settings or UI controls, just one simple action that worked.
 
-<Video src={sf2023} />
+<Video src={sf2023} muted />
 
 Long story short, after launch the plugin’s usage grew **almost 8x in six months (Dec, 2022 → Jun, 2023)**. You might be wondering: _how did you make it?_ To make it work I had to dig into how the browser writes data to the clipboard and how Figma reads it back on paste.
 
@@ -109,23 +109,25 @@ So I tried pasting the connector into VS Code and Apple Notes to see what would 
 }
 ```
 
-And the real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data.
+And the real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data:
 
 ```JSON
 fig-kiwiF\x00\x00\x00\x1CK\x00\x00µ½\v\x9CdI[...]\x197Ü\x83\x03
 ```
 
-This fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace) the same schema used to encode Figma files. So what I needed to store inside the static file wasn’t just vector data; it was a tiny `.fig` file!
+This fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace). So what I needed to store inside the static file wasn’t just vector data; it was a tiny `.fig` file!
 
 ---
 
-### Decode fig-kiwi
+### Inside fig-kiwi
 
 How does copying in Figma actually work? In short, Figma turns the selected elements (area) into a small `.fig` file through fig-kiwi, encodes it in Base64, places that string inside the `data-buffer` attribute of an empty HTML `<span>` element, and then writes the entire HTML snippet to the clipboard as `text/html`.
 
-You can also test this yourself: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see the actual contents, including Design data, Meta data, and Graphics data.
+You can also test this yourself: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see the actual contents, including Design data (.fig), Meta data (.json), and the thumbnail.
 
 <Video src={figFileInspector} />
+
+
 
 At first, this approach might seem overcomplicated, but there’s a good reason for it. As [Alex Harri explains in his article on clipboard formats](https://alexharri.com/blog/clipboard), browsers have to translate data between web and operating system clipboard APIs, and each OS supports only a few “standard” formats, like plain text, HTML, and PNG. Custom types (like Figma’s internal format) don’t map cleanly across apps.
 
@@ -135,9 +137,9 @@ By storing encoded data as `text/html`, Figma ensures that the clipboard content
 
 ### Back to the plugin
 
-Once I understood how fig-kiwi and clipboard encoding worked, I could finally rebuild SimpleFlow from the inside out.
+Once I understood how fig-kiwi and clipboard encoding worked, I could finally rebuild SimpleFlow from the inside out. The plugin can now generate connectors dynamically: adjusting color, stroke width, or corner rounding.
 
-Following the same process, the plugin can now generate connectors dynamically: adjusting color, stroke width, or corner rounding. It can even **create connector types that aren’t available in Figma’s official UI**. Because the plugin builds connectors directly at the data level, it offers far more precise control without the usual editor limitations:
+It can even **create connector types that aren’t available in Figma’s official UI**. Because the plugin builds connectors directly at the data level, it offers far more precise control without the usual editor limitations:
 
 ```JSON lines={[19,23]} showLineNumbers
 /**
@@ -177,7 +179,7 @@ Following the same process, the plugin can now generate connectors dynamically: 
 
 <Video src={sf2025} />
 
-On the other hand, getting clipboard writes to behave inside Figma’s plugin sandbox was tricky. Some clipboard APIs are deprecated, and browser behavior can be inconsistent. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After plenty of trial and error, I found a setup stable enough to rely on.
+On the other hand, getting **clipboard writes to behave** inside Figma’s plugin sandbox was tricky. Some clipboard APIs are deprecated, and browser behavior can be inconsistent. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After plenty of trial and error, I found a setup stable enough to rely on.
 
 That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid element schema, encodes it the same way Figma does, save the data into Clipboard, and relies on Figma's native parsing process when pasting.
 

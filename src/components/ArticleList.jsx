@@ -55,7 +55,7 @@ export function ArticleList() {
           <Link
             key={article.slug}
             to={`/${article.slug}`}
-            className="article-link w-full px-4 py-3 rounded-lg transition-colors duration-150"
+            className="article-link w-full px-3 py-3 rounded-lg transition-colors duration-150"
           >
             <div className="flex flex-col gap-1 mb:gap-2">
               <h6 className="my-0!">{article.title}</h6>

@@ -167,7 +167,7 @@ pre[class*="language-"] {
 }
 
 .token.comment {
-  color: rgb(110, 231, 183) !important; /* emerald-400 */
+  color: rgb(52, 124, 96) !important; /* emerald-400 */
   opacity: 0.7 !important;
 }
 

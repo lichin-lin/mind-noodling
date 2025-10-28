@@ -181,6 +181,32 @@ It can even **create connector types that aren’t available in Figma’s offici
 
 On the other hand, getting **clipboard writes to behave** inside Figma’s plugin sandbox was tricky. Some clipboard APIs are deprecated, and browser behavior can be inconsistent. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After plenty of trial and error, I found a setup stable enough to rely on.
 
+```js
+  const setToClipboard = async (data) => {
+    try {
+      /**
+       * As with many new APIs, the Clipboard API is only supported for pages served over HTTPS.
+       * To help prevent abuse, clipboard access is only allowed when a page is the active tab.
+       * Pages in active tabs can write to the clipboard without requesting permission,
+       * but reading from the clipboard always requires permission.
+       */
+      const contentBlob = new Blob([data], { type: 'text/html' });
+      const item = new clipboard.ClipboardItem({ 'text/html': contentBlob });
+
+      clipboard.write([item]).then(
+        () => {
+          console.log('Copied to clipboard successfully!');
+        },
+        (error) => {
+          console.error('unable to write to clipboard. Error:');
+        }
+      );
+    } catch (err) {
+      new Error(err);
+    }
+  };
+```
+
 That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid element schema, encodes it the same way Figma does, save the data into Clipboard, and relies on Figma's native parsing process when pasting.
 
 ---

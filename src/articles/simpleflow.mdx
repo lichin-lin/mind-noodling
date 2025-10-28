@@ -90,7 +90,7 @@ So I tried pasting the connector into VS Code and Apple Notes to see what would 
 
 <img src={clipboardInsImage} alt="Inspector" />
 
-```html
+```html lines={[3,4]} showLineNumbers
 <meta charset="utf-8" />
 <div>
   <span data-metadata="<!--(figmeta)eyJm[...]9Cg==(/figmeta)-->"></span>
@@ -111,11 +111,11 @@ So I tried pasting the connector into VS Code and Apple Notes to see what would 
 
 And the real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data.
 
-```Fig-kiwi
+```JSON
 fig-kiwiF\x00\x00\x00\x1CK\x00\x00µ½\v\x9CdI[...]\x197Ü\x83\x03
 ```
 
-That fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace) the same schema used to encode Figma files. So what I needed to store inside the static file wasn’t just vector data; it was a tiny `.fig` file!
+This fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace) the same schema used to encode Figma files. So what I needed to store inside the static file wasn’t just vector data; it was a tiny `.fig` file!
 
 ---
 
@@ -139,7 +139,7 @@ Once I understood how fig-kiwi and clipboard encoding worked, I could finally re
 
 Following the same process, the plugin can now generate connectors dynamically: adjusting color, stroke width, or corner rounding. It can even **create connector types that aren’t available in Figma’s official UI**. Because the plugin builds connectors directly at the data level, it offers far more precise control without the usual editor limitations:
 
-```JSON
+```JSON lines={[19,23]} showLineNumbers
 /**
 * Working at the schema level unlocks two key advantages:
 *
@@ -187,7 +187,7 @@ That’s how SimpleFlow’s **Copy Connector** button actually works, it assembl
 
 Around mid-2025, Figma tightened its API. Developers began seeing errors like this:
 
-```plaintext title="error.log"
+```plaintext
 Error: in clone: Cloning CONNECTOR nodes is not supported in the current editor
 ```
 

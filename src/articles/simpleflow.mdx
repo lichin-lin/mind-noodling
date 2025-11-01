@@ -129,12 +129,73 @@ You can also test this yourself: try to create a new figma file, save and upload
 
 <Video src={figFileInspector} />
 
-```TBD
-我覺得這裡少了一點什麼:
-1. 先生成 json
-2. 用 kiwi-schema encode
-3. 再次 encode 成 base64
-4. ...
+```javascript title={'STEP 1: ArrayBuffer → JSON (Kiwi Schema Decode)'}
+import { ByteBuffer, compileSchema, decodeBinarySchema } from 'kiwi-schema';
+
+// Extract Base64 from html → Base64 → Blob → ArrayBuffer, then:
+
+const figToJson = (fileBuffer: ArrayBuffer): object => {
+
+  // Parse fig-kiwi format: [magic][delimiter][schema section][data section]
+  const [schemaByte, dataByte] = figToBinaryParts(fileBuffer);
+  
+  const schema = decodeBinarySchema(new ByteBuffer(schemaByte));
+  const schemaHelper = compileSchema(schema);
+  const json = schemaHelper['decodeMessage'](new ByteBuffer(dataByte));
+  
+  // Encode blob bytes to base64 for JSON (if any)
+  return convertBlobsToBase64(json);
+}
+
+// → { nodeChanges: [{ type: 'CONNECTOR', nodeGenerationData: {...}, ... }] }
+const jsonData = figToJson(arrayBuffer);
+
+// Now, jsonData for you to modify (Skip)
+
+```
+
+
+```javascript title={'STEP 2: JSON → Uint8Array (Kiwi Schema Encode)'}
+import { ByteBuffer, compileSchema, decodeBinarySchema } from 'kiwi-schema';
+
+// After updating all the connector JSON data,
+
+const jsonToFig = async (json: any, originalBuffer: ArrayBuffer): Promise<Uint8Array> => {
+  
+  // Parse fig-kiwi format: [magic][delimiter][schema section][data section]
+  const [schemaByte, _] = figToBinaryParts(originalBuffer);
+  
+  // Encode JSON using original schema
+  const schema = decodeBinarySchema(new ByteBuffer(schemaByte));
+  const schemaHelper = compileSchema(schema);
+  const encodedData = schemaHelper['encodeMessage'](decodeBase64ToBlobBytes(json));
+  
+  // Compress both schema and data
+  const compressedSchema = UZIP.deflateRaw(schemaByte);
+  const compressedData = UZIP.deflateRaw(encodedData);
+  
+  // Build fig-kiwi binary format
+  const result = new Uint8Array(
+    8 + 4 +                              // magic + delimiter
+    4 + compressedSchema.length +        // schema section
+    4 + compressedData.length            // data section
+  );
+  
+  // Write header: 'fig-kiwi' magic bytes + delimiter
+  result.set([102, 105, 103, 45, 107, 105, 119, 105], 0);  // 'fig-kiwi'
+  result.set([0x0f, 0, 0, 0], 8);                          // delimiter
+  
+  // ... and the rest of data:
+  // [magic bytes][delimiter][compressed schema][compressed data]
+
+  return result;
+};
+
+// binaryData is now a Uint8Array in Figma's fig-kiwi format
+const binaryData = await jsonToFig(jsonData, arrayBuffer);
+
+// then, Uint8Array → Base64 → Update to the HTML and Write to Clipboard
+
 ```
 
 At first, this approach might seem overcomplicated, but there’s a good reason for it. As [Alex Harri explains in his article on clipboard formats](https://alexharri.com/blog/clipboard), browsers have to translate data between web and operating system clipboard APIs, and each OS supports only a few “standard” formats, like plain text, HTML, and PNG. Custom types (like Figma’s internal format) don’t map cleanly across apps.

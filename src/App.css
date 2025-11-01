@@ -41,7 +41,7 @@
 }
 
 .prose p {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 400;
   margin-bottom: 2rem;
   line-height: 1.75;
@@ -54,14 +54,14 @@
 
 .prose ul,
 .prose ol {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   padding-left: 1.5rem;
 }
 
 .prose li {
   margin-bottom: 0.5rem;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1.75;
   color: var(--color-text-muted-fg);
 }
@@ -154,7 +154,7 @@ img {
   }
 
   .prose h3 {
-    font-size: 1.75rem;
+    font-size: 1.8rem;
   }
 
   .prose p {
@@ -173,12 +173,22 @@ ol {
 figure {
   margin: 2.5rem 0;
   text-align: center;
+
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
 }
 
-figure img {
-  margin: 0 0 0.5rem 0;
+figure img,
+figure video {
+  margin: 0;
 }
 
+figure img + img {
+  margin-top: 0.5rem;
+}
+
+figcaption,
 figcaption > p {
   margin-top: 0;
   font-size: 0.95rem !important;

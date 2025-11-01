@@ -7,6 +7,7 @@ import RoutingOrthogonalDiagramImage2 from "../assets/simpleflow/Routing Orthogo
 import sf2019 from "../assets/simpleflow/sf-2019.mp4";
 import sf2023 from "../assets/simpleflow/sf-2023.mp4";
 import sf2025 from "../assets/simpleflow/sf-2025.mp4";
+import sf2025_2 from "../assets/simpleflow/sf-2025-2.mp4";
 import figFileInspector from "../assets/simpleflow/fig-file-inspector.mp4";
 
 export const metadata = {
@@ -37,14 +38,14 @@ Most of us draw diagrams just to make sense of how things work. Boxes and arrows
 
 <figure>
   <img src={diagramImage} alt="Diagram from Rasmus Andersson" />
-  <figcaption>
-    A diagram draw by Rasmus Andersson
-  </figcaption>
+  <figcaption>A diagram draw by Rasmus Andersson</figcaption>
 </figure>
 
 Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. The connectors looked off, and any time something changed, you had to modify context again.
 
-Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/plugins). That suddenly made it possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn’t stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
+Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/plugins). That suddenly made it possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn't stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
+
+<Video src={sf2025} caption={"SimpleFlow today, six years after the initial idea (2025)"} />
 
 ---
 
@@ -142,11 +143,11 @@ const figToJson = (fileBuffer: ArrayBuffer): { json, schemaByte: Uint8Array } =>
 
   // Parse fig-kiwi format: ['fig-kiwi' keyword][delimiter][schema section][data section]
   const [schemaByte, dataByte] = figToBinaryParts(fileBuffer);
-  
+
   const schema = decodeBinarySchema(new ByteBuffer(schemaByte));
   const schemaHelper = compileSchema(schema);
   const json = schemaHelper['decodeMessage'](new ByteBuffer(dataByte));
-  
+
   // Return both json and schemaByte for encoding later
   return { json, schemaByte };
 }
@@ -159,26 +160,25 @@ const { json, schemaByte } = figToJson(arrayBuffer);
 Now you can edit whatever you want at the schema level! Working directly with the schema exposes more props than the API level, giving you access to undocumented fields and configurations. After updating all the connector JSON data, you can encode it back:
 
 ```javascript title={'STEP 2: JSON → Uint8Array (Kiwi Schema Encode)'}
-import { ByteBuffer, compileSchema, decodeBinarySchema } from 'kiwi-schema';
+import { ByteBuffer, compileSchema, decodeBinarySchema } from "kiwi-schema";
 
 const jsonToFig = async (json, schemaByte: Uint8Array): Promise<Uint8Array> => {
-  
   // Reuse the schema from decode step (no need to re-parse!)
   const schema = decodeBinarySchema(new ByteBuffer(schemaByte));
   const schemaHelper = compileSchema(schema);
-  const encodedData = schemaHelper['encodeMessage'](decodeBase64ToBlobBytes(json));
-  
+  const encodedData = schemaHelper["encodeMessage"](decodeBase64ToBlobBytes(json));
+
   // Compress both schema and data
   const compressedSchema = UZIP.deflateRaw(schemaByte);
   const compressedData = UZIP.deflateRaw(encodedData);
-  
+
   // Build fig-kiwi binary format
   const result = new Uint8Array(
     8 + 4 +                              // keyword bytes + delimiter
     4 + compressedSchema.length +        // schema section
     4 + compressedData.length            // data section
   );
-  
+
   // Write header: 'fig-kiwi' keyword bytes + delimiter
   result.set([102, 105, 103, 45, 107, 105, 119, 105], 0);  // 'fig-kiwi'
   result.set([0x0f, 0, 0, 0], 8);                          // delimiter
@@ -192,7 +192,6 @@ const jsonToFig = async (json, schemaByte: Uint8Array): Promise<Uint8Array> => {
 const binaryData = await jsonToFig(jsonData, schemaByte);
 
 // then, Uint8Array → Base64 → Update to the HTML and write to Clipboard
-
 ```
 
 At first, this approach might seem overcomplicated, but there’s a good reason for it. As [Alex Harri explains in his article on clipboard formats](https://alexharri.com/blog/clipboard), browsers have to translate data between web and operating system clipboard APIs, and each OS supports only a few “standard” formats, like plain text, HTML, and PNG. Custom types (like Figma’s internal format) don’t map cleanly across apps.
@@ -211,7 +210,7 @@ It can even **create connector types that aren’t available in Figma’s offici
 /**
 * Working at the schema level unlocks two key advantages:
 *
-* 1. Access to undocumented properties: Some connector properties like `connectorTextMidpoint` 
+* 1. Access to undocumented properties: Some connector properties like `connectorTextMidpoint`
 *    exist in the schema but aren't exposed through Figma's official API documentation.
 *    https://developers.figma.com/docs/plugins/api/api-reference/
 *
@@ -243,34 +242,34 @@ It can even **create connector types that aren’t available in Figma’s offici
 }
 ```
 
-<Video src={sf2025} />
+<Video src={sf2025_2} />
 
 On the other hand, getting **clipboard writes to behave** inside Figma’s plugin sandbox was tricky. Some clipboard APIs are deprecated, and browser behavior can be inconsistent. This [community thread](https://forum.figma.com/ask-the-community-7/write-to-clipboard-from-custom-plugin-23974) became my main reference. After plenty of trial and error, I found a setup stable enough to rely on.
 
 ```js
-  const setToClipboard = async (data) => {
-    try {
-      /**
-       * As with many new APIs, the Clipboard API is only supported for pages served over HTTPS.
-       * To help prevent abuse, clipboard access is only allowed when a page is the active tab.
-       * Pages in active tabs can write to the clipboard without requesting permission,
-       * but reading from the clipboard always requires permission.
-       */
-      const contentBlob = new Blob([data], { type: 'text/html' });
-      const item = new clipboard.ClipboardItem({ 'text/html': contentBlob });
+const setToClipboard = async (data) => {
+  try {
+    /**
+     * As with many new APIs, the Clipboard API is only supported for pages served over HTTPS.
+     * To help prevent abuse, clipboard access is only allowed when a page is the active tab.
+     * Pages in active tabs can write to the clipboard without requesting permission,
+     * but reading from the clipboard always requires permission.
+     */
+    const contentBlob = new Blob([data], { type: "text/html" });
+    const item = new clipboard.ClipboardItem({ "text/html": contentBlob });
 
-      clipboard.write([item]).then(
-        () => {
-          console.log('Copied to clipboard successfully!');
-        },
-        (error) => {
-          console.error('unable to write to clipboard. Error:');
-        }
-      );
-    } catch (err) {
-      new Error(err);
-    }
-  };
+    clipboard.write([item]).then(
+      () => {
+        console.log("Copied to clipboard successfully!");
+      },
+      (error) => {
+        console.error("unable to write to clipboard. Error:");
+      }
+    );
+  } catch (err) {
+    new Error(err);
+  }
+};
 ```
 
 That’s how SimpleFlow’s **Copy Connector** button actually works, it assembles a valid element schema, encodes it the same way Figma does, save the data into Clipboard, and relies on Figma's native parsing process when pasting.

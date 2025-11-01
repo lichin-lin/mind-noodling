@@ -22,4 +22,7 @@ export default defineConfig({
     articleMetadataPlugin(),
   ],
   base: "/",
+  build: {
+    manifest: true, // Generate manifest.json to map source to hashed outputs
+  },
 });

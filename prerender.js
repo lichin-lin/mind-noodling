@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 
 // Read the auto-generated metadata file
 const metadataPath = path.join(__dirname, 'dist', 'articles-metadata.json');
+const manifestPath = path.join(__dirname, 'dist', '.vite', 'manifest.json');
 
 if (!fs.existsSync(metadataPath)) {
   console.error('❌ articles-metadata.json not found. Build may have failed.');
@@ -15,6 +16,12 @@ if (!fs.existsSync(metadataPath)) {
 
 const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
 const { articles, baseUrl } = metadata;
+
+// Read Vite's manifest to map original paths to hashed outputs
+let manifest = {};
+if (fs.existsSync(manifestPath)) {
+  manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+}
 
 if (articles.length === 0) {
   console.log('⚠️  No articles found to prerender');
@@ -31,8 +38,12 @@ articles.forEach(article => {
   const description = article.description;
   const url = `${baseUrl}/${article.slug}`;
   
-  // Use the API-generated OG image with article details
-  const image = `${baseUrl}/api/og?title=${encodeURIComponent(article.title)}&description=${encodeURIComponent(article.description)}`;
+  // Look up the actual hashed file path from Vite's manifest
+  let image = null;
+  if (article.coverImageSource && manifest[article.coverImageSource]) {
+    // Use the manifest to get the hashed output path
+    image = `${baseUrl}/${manifest[article.coverImageSource].file}`;
+  }
   
   // Replace meta tags (handle multiline attributes)
   html = html.replace(

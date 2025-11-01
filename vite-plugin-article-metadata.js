@@ -18,11 +18,28 @@ export function articleMetadataPlugin() {
       const mainChunk = jsChunks[0];
       const code = mainChunk.code;
       
+      // Build a map of image imports to their actual built paths
+      // Look for patterns like: cover-Cvq5ygLt.png or any asset imports
+      const imageAssets = Object.values(bundle).filter(
+        chunk => chunk.type === 'asset' && 
+        (chunk.fileName.endsWith('.png') || chunk.fileName.endsWith('.jpg'))
+      );
+      
+      // Map original names to built paths (e.g., "cover" -> "/assets/cover-Cvq5ygLt.png")
+      const imageMap = {};
+      imageAssets.forEach(asset => {
+        const match = asset.fileName.match(/\/([^\/]+)-[a-zA-Z0-9_-]+\.(png|jpg)/);
+        if (match) {
+          const baseName = match[1];
+          imageMap[baseName] = `/${asset.fileName}`;
+        }
+      });
+      
       // Extract article metadata from the bundled code
-      // Look for the metadata objects in the bundle
       const articles = [];
       
-      // Pattern to match metadata exports: title, slug, description, coverImage
+      // Enhanced pattern to capture metadata with coverImage reference
+      // Looking for: {title:"...",slug:"...",description:"...",coverImage:X}
       const metadataPattern = /{[^}]*title:\s*["']([^"']+)["'][^}]*slug:\s*["']([^"']+)["'][^}]*description:\s*["']([^"']+)["'][^}]*}/gs;
       
       let match;
@@ -36,7 +53,17 @@ export function articleMetadataPlugin() {
         // Avoid duplicates
         if (!seen.has(slug)) {
           seen.add(slug);
-          articles.push({ title, slug, description });
+          
+          // Store the SOURCE path (not the hashed path) so prerender can look it up
+          // The prerender script will use manifest.json to find the actual hashed file
+          const coverImageSource = `src/assets/${slug}/cover.png`;
+          
+          articles.push({ 
+            title, 
+            slug, 
+            description,
+            coverImageSource // Store source path for manifest lookup
+          });
         }
       }
       

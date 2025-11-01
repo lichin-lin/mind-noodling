@@ -48,10 +48,9 @@
   color: var(--color-text-muted-fg);
 }
 
-.article-page-header p  {
+.article-page-header p {
   line-height: 1.5;
 }
-
 
 .prose ul,
 .prose ol {
@@ -180,10 +179,10 @@ figure img {
   margin: 0 0 0.5rem 0;
 }
 
-figcaption > p{
+figcaption > p {
   margin-top: 0;
   font-size: 0.95rem !important;
-  opacity: 0.7;
+  opacity: 0.7 !important;
   color: var(--color-text-muted) !important;
 }
 

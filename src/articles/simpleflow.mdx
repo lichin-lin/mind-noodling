@@ -37,7 +37,9 @@ Most of us draw diagrams just to make sense of how things work. Boxes and arrows
 
 <figure>
   <img src={diagramImage} alt="Diagram from Rasmus Andersson" />
-  <figcaption>A diagram draw by Rasmus Andersson</figcaption>
+  <figcaption>
+    A diagram draw by Rasmus Andersson
+  </figcaption>
 </figure>
 
 Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. The connectors looked off, and any time something changed, you had to modify context again.
@@ -111,7 +113,7 @@ So I tried pasting the connector into VS Code and Apple Notes to see what would 
 }
 ```
 
-And the real payload lives inside `data-buffer`. Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data:
+And the real payload lives inside `data-buffer` (pretty huge!). Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data:
 
 ```JSON
 fig-kiwiF\x00\x00\x00\x1CK\x00\x00µ½\v\x9CdI[...]\x197Ü\x83\x03
@@ -121,51 +123,47 @@ This fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://g
 
 ---
 
-### Encoding and Decoding using kiwi-schema
+### Decoding and Encoding using kiwi-schema
 
-How does copying in Figma actually work? In short, Figma turns the selected elements (area) into a small `.fig` file through kiwi-schema format, encodes it in Base64, places that string inside the `data-buffer` attribute of an empty HTML `<span>` element, and then writes the entire HTML snippet to the clipboard as `text/html`.
+When user press copy hotkey, Figma turns the selected elements (area) into a small `.fig` file through kiwi-schema format, encodes it in Base64, places that string inside the `data-buffer` attribute of an empty HTML `<span>` element, and then writes the entire HTML snippet to the clipboard as `text/html`.
 
-You can test out the online version here as well: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see the actual contents, including Design data (.fig), Meta data (.json), and the thumbnail.
+You can test out the online version here: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see the actual contents, including Design data (.fig), Meta data (.json), and the thumbnail.
 
 <Video src={figFileInspector} />
+
+If you're interested in learning more about the Kiwi format itself, check out [the kiwi-schema repository](https://github.com/evanw/kiwi) to understand how the binary encoding works. Below I will also provide the pseudo code to guide you through the process:
 
 ```javascript title={'STEP 1: ArrayBuffer → JSON (Kiwi Schema Decode)'}
 import { ByteBuffer, compileSchema, decodeBinarySchema } from 'kiwi-schema';
 
 // Extract Base64 from html → Base64 → Blob → ArrayBuffer, then:
 
-const figToJson = (fileBuffer: ArrayBuffer): object => {
+const figToJson = (fileBuffer: ArrayBuffer): { json, schemaByte: Uint8Array } => {
 
-  // Parse fig-kiwi format: [magic][delimiter][schema section][data section]
+  // Parse fig-kiwi format: ['fig-kiwi' keyword][delimiter][schema section][data section]
   const [schemaByte, dataByte] = figToBinaryParts(fileBuffer);
   
   const schema = decodeBinarySchema(new ByteBuffer(schemaByte));
   const schemaHelper = compileSchema(schema);
   const json = schemaHelper['decodeMessage'](new ByteBuffer(dataByte));
   
-  // Encode blob bytes to base64 for JSON (if any)
-  return convertBlobsToBase64(json);
+  // Return both json and schemaByte for encoding later
+  return { json, schemaByte };
 }
 
-// → { nodeChanges: [{ type: 'CONNECTOR', nodeGenerationData: {...}, ... }] }
-const jsonData = figToJson(arrayBuffer);
-
-// Now, jsonData for you to modify (Skip)
+const { json, schemaByte } = figToJson(arrayBuffer);
+// → { json: { nodeChanges: [{ type: 'CONNECTOR', ... }] }, schemaByte: Uint8Array }
 
 ```
 
+Now you can edit whatever you want at the schema level! Working directly with the schema exposes more props than the API level, giving you access to undocumented fields and configurations. After updating all the connector JSON data, you can encode it back:
 
 ```javascript title={'STEP 2: JSON → Uint8Array (Kiwi Schema Encode)'}
 import { ByteBuffer, compileSchema, decodeBinarySchema } from 'kiwi-schema';
 
-// After updating all the connector JSON data,
-
-const jsonToFig = async (json: any, originalBuffer: ArrayBuffer): Promise<Uint8Array> => {
+const jsonToFig = async (json, schemaByte: Uint8Array): Promise<Uint8Array> => {
   
-  // Parse fig-kiwi format: [magic][delimiter][schema section][data section]
-  const [schemaByte, _] = figToBinaryParts(originalBuffer);
-  
-  // Encode JSON using original schema
+  // Reuse the schema from decode step (no need to re-parse!)
   const schema = decodeBinarySchema(new ByteBuffer(schemaByte));
   const schemaHelper = compileSchema(schema);
   const encodedData = schemaHelper['encodeMessage'](decodeBase64ToBlobBytes(json));
@@ -176,25 +174,24 @@ const jsonToFig = async (json: any, originalBuffer: ArrayBuffer): Promise<Uint8A
   
   // Build fig-kiwi binary format
   const result = new Uint8Array(
-    8 + 4 +                              // magic + delimiter
+    8 + 4 +                              // keyword bytes + delimiter
     4 + compressedSchema.length +        // schema section
     4 + compressedData.length            // data section
   );
   
-  // Write header: 'fig-kiwi' magic bytes + delimiter
+  // Write header: 'fig-kiwi' keyword bytes + delimiter
   result.set([102, 105, 103, 45, 107, 105, 119, 105], 0);  // 'fig-kiwi'
   result.set([0x0f, 0, 0, 0], 8);                          // delimiter
   
-  // ... and the rest of data:
-  // [magic bytes][delimiter][compressed schema][compressed data]
+  // ... and the rest of compressedSchema and compressedData.
 
   return result;
 };
 
 // binaryData is now a Uint8Array in Figma's fig-kiwi format
-const binaryData = await jsonToFig(jsonData, arrayBuffer);
+const binaryData = await jsonToFig(jsonData, schemaByte);
 
-// then, Uint8Array → Base64 → Update to the HTML and Write to Clipboard
+// then, Uint8Array → Base64 → Update to the HTML and write to Clipboard
 
 ```
 

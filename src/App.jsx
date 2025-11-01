@@ -9,6 +9,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 import { ArticleList } from "./components/ArticleList";
 import { ArticlePage } from "./components/ArticlePage";
 import { AnimatePresence, motion } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 import "./App.css";
 
 function Header() {
@@ -73,10 +74,12 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <BrowserRouter basename="/">
-      <Header />
-      <AnimatedRoutes />
-    </BrowserRouter>
+    <Analytics>
+      <BrowserRouter basename="/">
+        <Header />
+        <AnimatedRoutes />
+      </BrowserRouter>
+    </Analytics>
   );
 }
 

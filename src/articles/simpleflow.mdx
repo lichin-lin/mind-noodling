@@ -125,7 +125,7 @@ This fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://g
 
 How does copying in Figma actually work? In short, Figma turns the selected elements (area) into a small `.fig` file through kiwi-schema format, encodes it in Base64, places that string inside the `data-buffer` attribute of an empty HTML `<span>` element, and then writes the entire HTML snippet to the clipboard as `text/html`.
 
-You can also test this yourself: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see the actual contents, including Design data (.fig), Meta data (.json), and the thumbnail.
+You can test out the online version here as well: try to create a new figma file, save and upload it to [Evan Wallace’s .fig parser](https://madebyevan.com/figma/fig-file-parser/). You’ll see the actual contents, including Design data (.fig), Meta data (.json), and the thumbnail.
 
 <Video src={figFileInspector} />
 

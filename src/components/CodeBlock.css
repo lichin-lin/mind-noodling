@@ -137,7 +137,7 @@ pre[class*="language-"] {
 }
 
 .token.module {
-  color: rgb(216, 180, 254) !important; /* purple-300 */
+  color: rgb(150 102 202) !important; /* violet-400 */
 }
 
 .token.attr-value {

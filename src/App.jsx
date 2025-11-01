@@ -5,6 +5,7 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ArticleList } from "./components/ArticleList";
 import { ArticlePage } from "./components/ArticlePage";
@@ -16,7 +17,7 @@ function Header() {
   const isHomePage = location.pathname === "/";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--color-bg)]/50 border-b border-[var(--color-bd)]/50">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-[var(--color-bg)]/50 border-b border-[var(--color-bd)]/50">
       <div className="flex items-center justify-between px-4 py-3">
         {!isHomePage && (
           <Link
@@ -73,10 +74,12 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <BrowserRouter basename="/">
-      <Header />
-      <AnimatedRoutes />
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter basename="/">
+        <Header />
+        <AnimatedRoutes />
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 

@@ -178,6 +178,10 @@ p {
   opacity: 0.9;
 }
 
+.article-list-header p > a {
+  font-size: 1.05rem;
+}
+
 .article-list-header a {
   font-weight: 400;
   color: var(--color-text-muted);

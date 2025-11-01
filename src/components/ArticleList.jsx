@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { articles } from "../articles";
+import { ExternalLink } from "./ExternalLink";
 
 export function ArticleList() {
   const formatDate = (dateString) => {
@@ -18,32 +19,15 @@ export function ArticleList() {
         <div className="article-list-header">
           <h1>Mind Noodling</h1>
           <p>
-            A collection of experiments and notes by Lichin, exploring design,
-            code, and the small details that make tools feel good to use.
+            A collection of experiments and notes by{" "}
+            <ExternalLink href="https://x.com/lichinlin" size={10} showArrow={false}>Lichin</ExternalLink>,
+            exploring design, code, and the small details that make tools feel
+            good to use.
           </p>
           <div className="flex gap-2">
-            <a
-              href="https://designtips.today"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://designtips.today" size={10}>
               designtips.today
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3.5 2.5H9.5M9.5 2.5V8.5M9.5 2.5L2.5 9.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
+            </ExternalLink>
           </div>
         </div>
       </header>
@@ -55,7 +39,7 @@ export function ArticleList() {
           <Link
             key={article.slug}
             to={`/${article.slug}`}
-            className="article-link w-full px-3 py-3 rounded-lg transition-colors duration-150"
+            className="article-link w-full px-4 py-3 rounded-lg transition-colors duration-150"
           >
             <div className="flex flex-col gap-1 mb:gap-2">
               <h6 className="my-0!">{article.title}</h6>

@@ -2,8 +2,8 @@ import coverImage from "../assets/simpleflow/cover.png";
 import statImage from "../assets/simpleflow/stat.png";
 import clipboardInsImage from "../assets/simpleflow/inspector.png";
 import diagramImage from "../assets/simpleflow/diagram.png";
+import diagramImage2 from "../assets/simpleflow/diagram2.avif";
 import RoutingOrthogonalDiagramImage from "../assets/simpleflow/Routing Orthogonal Diagram.png";
-import RoutingOrthogonalDiagramImage2 from "../assets/simpleflow/Routing Orthogonal Diagram 2.png";
 import sf2019 from "../assets/simpleflow/sf-2019.mp4";
 import sf2023 from "../assets/simpleflow/sf-2023.mp4";
 import sf2025 from "../assets/simpleflow/sf-2025.mp4";
@@ -11,7 +11,7 @@ import sf2025_2 from "../assets/simpleflow/sf-2025-2.mp4";
 import figFileInspector from "../assets/simpleflow/fig-file-inspector.mp4";
 
 export const metadata = {
-  title: "How Simpleflow Was Built",
+  title: "How Simpleflow was built",
   slug: "simpleflow",
   description:
     "From geometry algorithms to clipboard hacking: the story behind a Figma plugin",
@@ -25,7 +25,7 @@ export const metadata = {
 </p>
 
 <div className="article-page-header">
-# How Simpleflow Was Built
+# How Simpleflow was built
 
 From geometry algorithms to clipboard hacking: the story behind a Figma plugin
 
@@ -48,7 +48,7 @@ When **[Figma opened its plugin API in 2019](https://www.figma.com/community/plu
 
 ---
 
-### Figuring Out Connectors
+### Figuring out connectors
 
 I started out SimpleFlow around one simple goal: **draw connectors that look tidy and don't cut through everything.**
 
@@ -60,7 +60,6 @@ I spent months writing rule-based routing: check positions, test collisions, ben
 
 <figure>
   <img src={RoutingOrthogonalDiagramImage} alt="Simpleflow stat 2020-1" />
-  <img src={RoutingOrthogonalDiagramImage2} alt="Simpleflow stat 2020-2" />
   <figcaption>
     A deep dive that covers most of those edge cases neatly (2020)
   </figcaption>
@@ -72,7 +71,7 @@ At that point, Figma’s API only supported connectors inside FigJam, but not in
 
 ---
 
-### One Button, Big Turning Point
+### One button, big turning point
 
 In **January 2023**, [Danny Postmaa tweets about Figcomponents.com](https://x.com/dannypostmaa/status/1612345747495874561) — a [site](https://www.figcomponents.com/) that let you copy UI components from the web and paste them straight into Figma. That immediately clicked for me: if the browser could paste components, then the same pathway might also paste FigJam connectors.
 
@@ -86,7 +85,7 @@ Long story short, after launch the plugin’s usage grew **almost 8x in six mont
 
 ---
 
-### Opening the Clipboard
+### Opening the clipboard
 
 At first, I thought it'd be simple: just write the connector data to the clipboard, right? I already had a static file saved in the plugin, but the tricky part was figuring out **what format it needed to be in**.
 
@@ -116,14 +115,14 @@ So I tried pasting the connector into VS Code and Apple Notes to see what would 
 And the real payload lives inside `data-buffer` (pretty huge!). Base64-decoding that produces a binary blob starting with `fig-kiwi`. I learned about this from [Alex Harri’s excellent deep dive](https://alexharri.com/blog/clipboard) on the Clipboard API, which explains not just how clipboard formats work in browsers, but also how Figma encodes its own data:
 
 ```JSON
-fig-kiwiF\x00\x00\x00\x1CK\x00\x00µ½\v\x9CdI[...]\x197Ü\x83\x03
+fig-kiwiF\x00\x00\x00\x1CK\x00\x00µ\v\x9CdI[...]\x83\x03
 ```
 
 This fig-kiwi string turned out to be Figma’s internal [Kiwi format](https://github.com/evanw/kiwi) (created by co-founder & former CTO Evan Wallace). So what I needed to store inside the static file wasn’t just vector data; it was a tiny `.fig` file!
 
 ---
 
-### Decoding and Encoding using kiwi-schema
+### Decoding and encoding using kiwi-schema
 
 When user press copy hotkey, Figma turns the selected elements (area) into a small `.fig` file through kiwi-schema format, encodes it in Base64, places that string inside the `data-buffer` attribute of an empty HTML `<span>` element, and then writes the entire HTML snippet to the clipboard as `text/html`.
 
@@ -275,7 +274,7 @@ That’s how SimpleFlow’s **Copy Connector** button actually works, it assembl
 
 ---
 
-### When Figma Closed the API Door
+### When Figma closed the API door
 
 Around mid-2025, Figma tightened its API. Developers began seeing errors like this:
 
@@ -292,7 +291,7 @@ Both approaches were technically programmatic: one used Figma’s API to create 
 
 ---
 
-### Looking Back
+### Looking back
 
 What began as a weekend experiment to route lines around boxes turned into an unexpected API journey. When geometry got tricky and the Figma API reached its limits, curiosity led me to explore how copy-paste actually works, and turned out to be the better path. Along the way, I learned a few things:
 

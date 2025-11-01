@@ -5,7 +5,6 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ArticleList } from "./components/ArticleList";
 import { ArticlePage } from "./components/ArticlePage";
@@ -74,12 +73,10 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <HelmetProvider>
-      <BrowserRouter basename="/">
-        <Header />
-        <AnimatedRoutes />
-      </BrowserRouter>
-    </HelmetProvider>
+    <BrowserRouter basename="/">
+      <Header />
+      <AnimatedRoutes />
+    </BrowserRouter>
   );
 }
 

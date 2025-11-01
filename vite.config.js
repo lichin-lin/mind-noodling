@@ -4,6 +4,7 @@ import mdx from "@mdx-js/rollup";
 import remarkGfm from "remark-gfm";
 import { remarkSandpack } from "remark-sandpack";
 import rehypeMdxCodeProps from 'rehype-mdx-code-props';
+import { articleMetadataPlugin } from './vite-plugin-article-metadata.js';
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -18,6 +19,7 @@ export default defineConfig({
     },
     react(),
     tailwindcss(),
+    articleMetadataPlugin(),
   ],
   base: "/",
 });

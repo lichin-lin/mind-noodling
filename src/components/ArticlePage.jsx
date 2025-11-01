@@ -8,7 +8,6 @@ import { Video } from "./Video";
 export function ArticlePage() {
   const { slug } = useParams();
   const article = articles.find((a) => a.slug === slug);
-
   if (!article) {
     return <Navigate to="/" replace />;
   }

@@ -30,8 +30,6 @@ From geometry algorithms to clipboard hacking: the story behind a Figma plugin
 
 </div>
 
-<img src={coverImage} alt="Simpleflow cover" />
-
 ---
 
 Most of us draw diagrams just to make sense of how things work. Boxes and arrows are the visual glue that help us see connections between ideas.
@@ -41,23 +39,23 @@ Most of us draw diagrams just to make sense of how things work. Boxes and arrows
   <figcaption>A diagram draw by Rasmus Andersson</figcaption>
 </figure>
 
-Back then, I’d watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. The connectors looked off, and any time something changed, you had to modify context again.
+Back then, I'd watch designers bounce between tools, sketching out flows and connectors, only to rebuild everything again inside Figma. The connectors looked off, and any time something changed, you had to modify context again.
 
-Then in **2019**, [Figma opened its plugin API](https://www.figma.com/community/plugins). That suddenly made it possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn't stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
+When **[Figma opened its plugin API in 2019](https://www.figma.com/community/plugins)**, it suddenly became possible for anyone to fix their own small frustrations. I thought: _what if drawing connectors inside Figma could be as easy as drawing shapes?_ What started as a small weekend experiment slowly turned into a long-term puzzle I couldn't stop thinking about. That idea grew into [**SimpleFlow**](https://www.figma.com/community/plugin/751821593330638172/simpleflow-figjam-connectors-everywhere).
 
-<Video src={sf2025} caption={"SimpleFlow today, six years after the initial idea (2025)"} />
+<Video src={sf2025} caption={"SimpleFlow today, six years after the initial idea (2019 → 2025)"} />
 
 ---
 
 ### Figuring Out Connectors
 
-The first versions of SimpleFlow were built around one simple goal: **draw connectors that look tidy and don’t cut through everything.**
+I started out SimpleFlow around one simple goal: **draw connectors that look tidy and don't cut through everything.**
 
 It sounded straightforward, but routing lines between moving boxes turned out to be a deep problem. What counts as a "good" route? How do you avoid tangled paths or weird overlaps? And what happens when frames start nesting or auto-layout gets involved?
 
 <Video src={sf2019} />
 
-I spent months back in 2020 writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I'd seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would've saved a lot of time!
+I spent months writing rule-based routing: check positions, test collisions, bend lines at ninety degrees, repeat. If I'd seen [this deep dive article about Routing Orthogonal Diagram Connectors](https://medium.com/swlh/routing-orthogonal-diagram-connectors-in-javascript-191dc2c5ff70) earlier, it would've saved a lot of time!
 
 <figure>
   <img src={RoutingOrthogonalDiagramImage} alt="Simpleflow stat 2020-1" />

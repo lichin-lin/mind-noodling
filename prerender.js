@@ -34,7 +34,7 @@ const template = fs.readFileSync(path.join(__dirname, 'dist', 'index.html'), 'ut
 articles.forEach(article => {
   let html = template;
   
-  const title = `${article.title} - Mind noodling`;
+  const title = `${article.title} - Mind Noodling`;
   const description = article.description;
   const url = `${baseUrl}/${article.slug}`;
   

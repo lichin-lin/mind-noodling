@@ -11,7 +11,6 @@ export function CodeBlock({
 }) {
   const [copied, setCopied] = useState(false)
   const language = className?.replace(/language-/, '') || 'text'
-  console.log('!', title, lines, words)
 
   const getCodeText = (node) => {
     if (typeof node === 'string') return node

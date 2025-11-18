@@ -47,6 +47,37 @@ Just some plain text code block
 with multiple lines.
 ```
 
+### CodeBlock kitchen sink
+
+```js title="Plain block"
+const message = 'Hello CodeBlock'
+console.log(message)
+```
+
+```js title="With line numbers" showLineNumbers
+const first = 1
+const second = 2
+const third = first + second
+console.log({ first, second, third })
+```
+
+```js title="Highlighted lines" showLineNumbers lines={[2,4]}
+function greet(name) {
+  const message = `Hello ${name}`
+  console.log(message)
+  return message
+}
+greet('Simpleflow')
+```
+
+```js title="Word highlight" showLineNumbers words={[{ line: 2, startColumn: 7, endColumn: 14 }]}
+const article = {
+  title: 'How Simpleflow was built',
+  slug: 'simpleflow',
+}
+console.log(article)
+```
+
 ## Table
 
 | Feature  | Status |

@@ -11,6 +11,7 @@ export function CodeBlock({
 }) {
   const [copied, setCopied] = useState(false)
   const language = className?.replace(/language-/, '') || 'text'
+  console.log('!', title, lines, words)
 
   const getCodeText = (node) => {
     if (typeof node === 'string') return node
@@ -57,9 +58,9 @@ export function CodeBlock({
               }`}
             >
               {showLineNumbers && (
-                <ReactCodeBlock.LineNumber className="code-block-line-number table-cell" />
+                <ReactCodeBlock.LineNumber className="table-cell code-block-line-number" />
               )}
-              <ReactCodeBlock.LineContent className="code-block-line-content table-cell">
+              <ReactCodeBlock.LineContent className="table-cell code-block-line-content">
                 <ReactCodeBlock.Token />
               </ReactCodeBlock.LineContent>
             </div>

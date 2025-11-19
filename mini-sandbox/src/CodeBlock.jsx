@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { CodeBlock as ReactCodeBlock } from 'react-code-block'
+import {
+  CodeBlock as ReactCodeBlock,
+  // github
+} from 'react-code-block'
 
 export function CodeBlock({
   children,
@@ -48,6 +51,7 @@ export function CodeBlock({
         language={language}
         lines={lines}
         words={words}
+        // theme={github}
       >
         <ReactCodeBlock.Code className="code-block-content">
           {({ isLineHighlighted }) => (

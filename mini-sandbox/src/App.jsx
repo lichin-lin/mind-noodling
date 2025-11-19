@@ -1,4 +1,4 @@
-import KitchenSink from './articles/kitchen-sink.mdx'
+import KitchenSink from './articles/node-edge-diagram-fundamentals.mdx'
 import { SandpackPlayground } from './SandpackPlayground.jsx'
 import { CodeBlock } from './CodeBlock.jsx'
 

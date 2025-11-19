@@ -1,0 +1,216 @@
+import Example1 from '../examples/Example1'
+
+# Short Notes on Diagram Workflows
+
+A diagram, at its simplest, is a set of blocks placed on a 2D surface to make relationships tangible: each block a piece of work or data, spaced so your eyes can jump between them. Before edges, zoom, layout algorithms, or styling systems, there is only position, shape, and contrast. Getting that foundation clear makes later complexity less fragile.
+
+<br />
+
+### Forming ideas on the canvas
+
+Picture this: you're staring at a wall of loosely coupled scripts, each representing a task in your deployment pipeline. Someone asks, "Which jobs block the release?" and you realize the answer lives scattered across Slack threads, wiki tables, and tribal knowledge. A diagram could clarify everything in seconds—but only if you can build one that's alive, not a static screenshot that rots the moment requirements shift.
+
+So you start with the most honest primitive: position. Below, a dark canvas holds a few rounded rectangles. No arrows yet, no fancy layout algorithm—just blocks floating in space. Each one could be a build step, a data transform, a service. The act of placing them is already design: close enough to suggest grouping, far enough to let the eye breathe. This is where every diagram begins.
+
+<Example1 />
+
+---
+
+### 2. Mental Model of a Diagram
+
+A diagram = `data model` (nodes + edges + metadata) + `rendering pipeline` (layout → layering → drawing → interaction hooks).
+
+We'll adopt a minimal canonical shape:
+
+```ts title="Data Model Draft"
+type Node = {
+  id: string
+  x: number
+  y: number
+  width: number
+  height: number
+  label?: string
+}
+type Edge = {
+  id: string
+  from: string
+  to: string
+  // path data comes later
+}
+interface DiagramState {
+  nodes: Node[]
+  edges: Edge[]
+  viewport: { x: number; y: number; k: number } // pan (x,y), zoom k
+}
+```
+
+### 3. SVG Coordinate System & Viewport
+
+Key ideas: user units, viewBox, transforms, preserving aspect ratio, pan vs. zoom layering strategy (wrap all content in one `<g>` with a combined transform). We'll later integrate `d3-zoom`.
+
+<SandpackPlayground preset="svg-coords" />
+
+### 4. Representing Nodes
+
+- Primitive choices: `<rect>`, `<circle>`, `<foreignObject>` for rich HTML, paths for custom silhouettes.
+- Styling separation: use classes + CSS variables for theme toggling.
+- Hit-box vs. visual shape; larger transparent rect can improve usability.
+
+### 5. Edges: Lines, Curves, Orthogonal Routing
+
+We start with a straight line: `M x1 y1 L x2 y2`. Then progress to smoothed quadratic/cubic curves and orthogonal (Manhattan) segments.
+
+```js title="Straight Edge Path"
+function straightPath(a, b) {
+  return `M ${a.x + a.width / 2} ${a.y + a.height / 2} L ${b.x + b.width / 2} ${
+    b.y + b.height / 2
+  }`
+}
+```
+
+### 6. Path Data Primer (M L H V C S Q T A Z)
+
+We'll build a mini interactive inspector to tweak commands and visualize control points. (Future Sandpack: `path-primer`).
+
+### 7. Building Adjacency & Derived Data
+
+Transform raw arrays into maps for O(1) lookup; precompute edge endpoints, bounding boxes, center points.
+
+### 8. Rendering Order & Layering
+
+Recommended stacking: edges below nodes; interaction overlays above nodes; debug layer toggle.
+
+### 9. Interaction Fundamentals (Hover, Focus, Selection)
+
+Use `pointerenter/leave`, maintain selection in state, apply CSS class toggles. Keyboard navigation: maintain an order list for arrow keys.
+
+### 10. Zoom & Pan (d3-zoom Intro)
+
+We'll wrap `<g id="scene">` and apply unified transform. Debounce expensive recomputations; recompute edge paths only when node coordinates change, not on pure zoom.
+
+<SandpackPlayground preset="zoom-pan" />
+
+### 11. Dragging Nodes (Pointer vs d3-drag)
+
+Compare implementing with raw pointer events (for tighter control + batching) vs. `d3-drag` convenience.
+
+### 12. Edge Recalculation on Drag
+
+Efficient invalidation: track edges needing recompute with sets keyed by node id.
+
+### 13. Layout Strategies Overview
+
+- Manual / absolute
+- Grid / pack
+- Force-directed (basic d3-force)
+- Layered (DAG, longest-path / Coffman-Graham) – future deep dive
+- External: ELK, Dagre (placeholder integration discussion)
+
+### 14. Edge Routing Strategies
+
+Naive straight lines vs. obstacle avoidance (simple waypoint around node bounding boxes) vs. smoothing algorithms.
+
+### 15. Performance Considerations
+
+- Minimize DOM mutations: reuse elements, keyed updates.
+- Avoid layout thrash: read, then write grouped in animation frame.
+- Virtualization for very large graphs (clip to viewport + margin).
+- Caching path strings.
+
+### 16. Hit Testing Techniques
+
+Bounding box first, then precise path length measurement (`getTotalLength`, `getPointAtLength`). Consider spatial indexing (R-Tree) for large diagrams.
+
+### 17. Accessibility & Semantics
+
+ARIA roles: treat nodes as buttons if interactive; focus ring styling; describing edges with labels for screen readers optionally hidden visually.
+
+### 18. Debugging Path Data
+
+Overlay control points, color segments, dump parsed commands, interactive scrubber for `t` parameter along curve.
+
+### 19. Exporting / Serialization
+
+SVG to string + download; foreignObject caveats; rasterization via `<canvas>` drawImage; preserving embedded fonts.
+
+### 20. Progressive Enhancement Roadmap
+
+Planned: dynamic layout switching, live path editing, edge bundling, mini-map viewport indicator.
+
+---
+
+### First Demo: The Smallest Honest Diagram
+
+We begin with two nodes and one edge not because it is impressive, but because everything later builds on the discipline of making even this tiny scene clean, readable, and extensible. From here we will branch: add ports, experiment with curved paths, attach interaction handlers, then invite layout algorithms to reposition nodes without breaking our mental model.
+
+<SandpackPlayground preset="basic-diagram" />
+
+```jsx title="BasicDiagram.jsx"
+import React from 'react'
+const nodes = [
+  { id: 'A', x: 40, y: 40, width: 80, height: 40, label: 'A' },
+  { id: 'B', x: 240, y: 160, width: 80, height: 40, label: 'B' },
+]
+const edges = [{ id: 'e1', from: 'A', to: 'B' }]
+
+function straightPath(a, b) {
+  return `M ${a.x + a.width / 2} ${a.y + a.height / 2} L ${b.x + b.width / 2} ${
+    b.y + b.height / 2
+  }`
+}
+
+export default function BasicDiagram() {
+  const nodeById = Object.fromEntries(nodes.map((n) => [n.id, n]))
+  return (
+    <svg width={400} height={240} style={{ background: 'var(--bg-subtle)' }}>
+      {/* Edges */}
+      {edges.map((e) => {
+        const a = nodeById[e.from]
+        const b = nodeById[e.to]
+        return (
+          <path
+            key={e.id}
+            d={straightPath(a, b)}
+            stroke="#555"
+            strokeWidth={2}
+            fill="none"
+          />
+        )
+      })}
+      {/* Nodes */}
+      {nodes.map((n) => (
+        <g key={n.id}>
+          <rect
+            x={n.x}
+            y={n.y}
+            width={n.width}
+            height={n.height}
+            rx={6}
+            fill="#fff"
+            stroke="#333"
+          />
+          <text
+            x={n.x + n.width / 2}
+            y={n.y + n.height / 2}
+            dominantBaseline="middle"
+            textAnchor="middle"
+            fontSize={14}
+          >
+            {n.label}
+          </text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+```
+
+> NOTE: Sandpack preset definitions are placeholders; once the presets are added to `sandpack/presets.js`, the embedded examples become live, tweakable sandboxes.
+
+---
+
+### Where We Go Next
+
+In the next chapter we will shape space: introducing viewBox discipline, pan & zoom transforms, and the first performance guardrails. Then we will explore the grammar of path data with an interactive inspector—because once you internalize how curves breathe, routing decisions become design rather than guesswork. Later chapters will narrate the tipping point from handcrafted layout to algorithmic assistance, and the choice between bespoke primitives and framework abstractions like React Flow. If a particular chapter resonates with a challenge you face, treat it as a fork you can follow independently.
+
+_This post is intentionally iterative. As each chapter matures, narrative sections will replace placeholders, and the demos will accumulate richer instrumentation for learning._

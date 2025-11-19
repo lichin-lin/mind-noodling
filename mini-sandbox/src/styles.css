@@ -5,8 +5,14 @@
   --color-muted: #6b7280;
   --color-border: #e5e7eb;
   --color-surface: #f9fafb;
+
+  /* Code block colors - synced with theme.js */
   --color-codeblock-bg: #faf8f2;
   --color-codeblock-border: #ede8dc;
+
+  /* Aliases for consistency with root app */
+  --color-text-muted: var(--color-muted);
+  --color-bd: var(--color-border);
 
   /* Accent/link */
   --color-link: #2563eb;
@@ -135,74 +141,6 @@ pre.code-block-content {
 
 .code-block-content.with-highlight {
   padding: 1rem 0;
-}
-
-/* Prism syntax highlighting tokens */
-pre[class*='language-'] {
-  color: var(--color-fg);
-  margin-top: 1rem !important;
-}
-
-.token-line.code-block-line-content.table-cell {
-  color: var(--color-fg) !important;
-}
-
-.token.tag,
-.token.class-name,
-.token.selector,
-.token.selector .class,
-.token.selector.class,
-.token.function {
-  color: rgb(236, 72, 153) !important; /* pink-400 */
-}
-
-.token.attr-name,
-.token.keyword,
-.token.rule,
-.token.pseudo-class,
-.token.important {
-  color: rgb(64, 128, 208) !important; /* blue-400 */
-}
-
-.token.module {
-  color: rgb(150 102 202) !important; /* violet-400 */
-}
-
-.token.attr-value {
-  color: rgb(64, 128, 208) !important; /* blue-400 */
-}
-
-.token.string {
-  color: rgb(238, 158, 73) !important; /* orange-300 */
-}
-
-.token.number {
-  color: rgb(139, 193, 110) !important;
-}
-
-.token.class {
-  color: rgb(94, 234, 212) !important; /* teal-300 */
-}
-
-.token.punctuation,
-.token.attr-equals {
-  color: var(--color-muted) !important;
-}
-
-.token.unit,
-.language-css .token.function {
-  color: rgb(186, 230, 253) !important; /* sky-200 */
-}
-
-.token.comment {
-  color: rgb(123 151 141) !important; /* emerald-400 */
-  opacity: 0.8 !important;
-}
-
-.token.property,
-.token.operator,
-.token.combinator {
-  color: var(--color-muted) !important;
 }
 
 main {

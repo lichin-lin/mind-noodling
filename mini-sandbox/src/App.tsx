@@ -1,6 +1,6 @@
 import KitchenSink from './articles/node-edge-diagram-fundamentals.mdx'
-import { SandpackPlayground } from './SandpackPlayground.jsx'
-import { CodeBlock } from './CodeBlock.jsx'
+import { SandpackPlayground } from './SandpackPlayground'
+import { CodeBlock } from './CodeBlock'
 
 export default function App() {
   const components = {

@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 :root {
   /* Neutrals */
   --color-bg: #ffffff;
@@ -7,8 +9,8 @@
   --color-surface: #f9fafb;
 
   /* Code block colors - synced with theme.js */
-  --color-codeblock-bg: #faf8f2;
-  --color-codeblock-border: #ede8dc;
+  --color-codeblock-bg: #f8f7f5;
+  --color-codeblock-border: #ece9e2;
 
   /* Aliases for consistency with root app */
   --color-text-muted: var(--color-muted);

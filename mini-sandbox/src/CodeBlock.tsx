@@ -1,8 +1,15 @@
+import { themes } from 'prism-react-renderer'
 import { useState } from 'react'
-import {
-  CodeBlock as ReactCodeBlock,
-  // github
-} from 'react-code-block'
+import { CodeBlock as ReactCodeBlock } from 'react-code-block'
+
+interface CodeBlockProps {
+  children: React.ReactNode
+  className?: string
+  title?: string
+  lines?: number[]
+  words?: string[]
+  showLineNumbers?: boolean
+}
 
 export function CodeBlock({
   children,
@@ -11,7 +18,7 @@ export function CodeBlock({
   lines = [],
   words = [],
   showLineNumbers = false,
-}) {
+}: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
   const language = className?.replace(/language-/, '') || 'text'
 
@@ -43,7 +50,35 @@ export function CodeBlock({
           className="code-block-copy-btn"
           aria-label="Copy code"
         >
-          {copied ? 'Copied' : 'Copy'}
+          {copied ? (
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+          )}
         </button>
       </div>
       <ReactCodeBlock
@@ -51,7 +86,7 @@ export function CodeBlock({
         language={language}
         lines={lines}
         words={words}
-        // theme={github}
+        theme={themes.github}
       >
         <ReactCodeBlock.Code className="code-block-content">
           {({ isLineHighlighted }) => (

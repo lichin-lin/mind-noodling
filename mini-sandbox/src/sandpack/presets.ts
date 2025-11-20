@@ -1,4 +1,16 @@
-export const presets = {
+interface PresetFile {
+  code: string
+}
+
+interface Preset {
+  files: Record<string, PresetFile>
+}
+
+interface Presets {
+  [key: string]: Preset
+}
+
+export const presets: Presets = {
   counter: {
     files: {
       '/App.js': {

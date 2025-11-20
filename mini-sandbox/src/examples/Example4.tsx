@@ -58,7 +58,7 @@ export function Example4() {
               y1={link.source.y}
               x2={link.target.x}
               y2={link.target.y}
-              stroke="#999"
+              stroke="#666"
               strokeWidth={1.5}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -73,7 +73,7 @@ export function Example4() {
         {/* Nodes */}
         {[...dag.nodes()].map((node) => {
           const estimatedLayer = Math.round(node.y / 80)
-          const darkness = 256 - estimatedLayer * 10
+          const darkness = 256 - estimatedLayer * 7.5
           const clamped = Math.max(darkness, 200)
           const fill = `rgb(${clamped},${clamped},${clamped})`
 

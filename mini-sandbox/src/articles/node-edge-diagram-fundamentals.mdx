@@ -3,44 +3,50 @@ import Example2 from '../examples/Example2'
 import Example3 from '../examples/Example3'
 import Example4 from '../examples/Example4'
 
-# Short Notes on Diagram Workflows
+# Building Interactive Workflow Diagrams
 
-A diagram, at its simplest, is a set of blocks placed on a 2D surface to make relationships tangible: each block a piece of work or data, spaced so your eyes can jump between them. Before edges, zoom, layout algorithms, or styling systems, there is only position, shape, and contrast. Getting that foundation clear makes later complexity less fragile.
+A diagram begins with a simple question: **how do I make complexity visible?** Not just visible—manipulable, explorable, alive. The kind that updates when your system changes, that reveals structure you couldn't see in text or tables.
 
-<br />
-
-### Forming ideas on the canvas
-
-Picture this: you're staring at a wall of loosely coupled scripts, each representing a task in your deployment pipeline. Someone asks, "Which jobs block the release?" and you realize the answer lives scattered across Slack threads, wiki tables, and tribal knowledge. A diagram could clarify everything in seconds—but only if you can build one that's alive, not a static screenshot that rots the moment requirements shift.
-
-So you start with the most honest primitive: position. Below, a dark canvas holds a few rounded rectangles. No arrows yet, no fancy layout algorithm—just blocks floating in space. Each one could be a build step, a data transform, a service. The act of placing them is already design: close enough to suggest grouping, far enough to let the eye breathe. This is where every diagram begins.
-
-<Example1 />
+We'll start from the most fundamental primitive and work our way up to layout algorithms that organize nodes automatically.
 
 ---
 
-### 2. Connecting Nodes with Edges
+## 1. The Empty Canvas
 
-Now that we have positioned nodes, the next step is to establish relationships. An edge is just a line connecting two points—but those two points carry meaning. They declare dependency, causation, sequence, or flow. Below, we introduce edges to connect our nodes. Notice how even a simple straight line begins to tell a story: which step feeds into the next, which tasks can run in parallel, where bottlenecks might emerge.
+It all starts with space. An infinite, blank surface waiting for structure.
+
+To map a system, we first need to identify its landmarks. We could call these **nodes**. Before we worry about connections or flows, we must simply give these pieces a place to exist.
+
+<Example1 />
+
+The act of positioning is powerful. By placing things near or far, aligned or scattered, you are already defining relationships.
+
+---
+
+## 2. Drawing Connections
+
+Once the nodes are in place, we started to draw lines. These lines are the relationship made visible. It turns a collection of isolated parts into a cohesive system. Suddenly, we can see how data flows, where dependencies lie, and how one piece of the puzzle influences another.
 
 <Example2 />
 
 ---
 
-### 3. When Complexity Overwhelms
+## 3. When Manual Breaks Down
 
-But things can quickly spiral out of control. Add ten nodes to a fixed-size canvas, and suddenly your carefully placed primitives become a tangled mess. Edges cross in ways that obscure meaning rather than clarify it. Nodes overlap, crowd the edges, or cluster in awkward corners. What felt intentional with four blocks now feels chaotic with ten. This is the moment when manual positioning breaks down, and you start craving layout algorithms, collision detection, and zoom controls. Below, see how even a modest increase in node count transforms a clean diagram into visual noise.
+But things can easily get out of control. With more and more nodes on the canvas, relationships become complicated and we start to get lost in the diagram.
 
 <Example3 />
 
+**This is the breaking point.** What felt intentional with a few blocks now feels like chaos. Manual positioning doesn't scale. The diagram has outgrown our ability to manage it by hand.
+
 ---
 
-### 4. Layout Algorithms to the Rescue
+## 4. Algorithms as Collaborators
 
-This is where layout algorithms become essential. Instead of manually placing each node, you define the relationships and let the algorithm determine optimal positions. **d3-dag** is one of the most powerful libraries for this—it handles directed acyclic graphs with sophisticated layering strategies, edge crossing minimization, and hierarchical positioning.
+This is where we start exploring layout algorithms. To tame the chaos, we need a systematic way to organize these elements.
 
-Below, the same 10 nodes are now arranged using Sugiyama layout with simplex layering. Notice how the algorithm automatically organizes nodes into clear hierarchical levels, minimizes edge crossings, and maintains consistent spacing. The gradient fill indicates depth: lighter nodes are at higher layers, darker ones deeper in the hierarchy. What was chaos becomes comprehensible structure.
+One of the most popular approaches is the **Sugiyama framework** (Layered Graph Drawing). Introduced by Kozo Sugiyama in [1981](https://ieeexplore.ieee.org/document/4308636), it revolutionized how we visualize hierarchical structures. The goal is simple but powerful: arrange nodes in layers so that edges flow in a single direction (usually top-to-bottom) with minimal crossing.
 
 <Example4 />
 
----
+With the algorithm in charge, the diagram suddenly makes sense. We have moved from manual placement to **structural clarity**.

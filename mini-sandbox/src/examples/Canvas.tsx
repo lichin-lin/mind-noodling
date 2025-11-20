@@ -13,7 +13,7 @@ export default function Canvas({
 }: CanvasProps) {
   return (
     <div
-      className={`w-full aspect-5/3 bg-gray-50/50 rounded-lg border border-gray-200 ${className}`}
+      className={`my-4 w-full aspect-5/3 bg-gray-50/50 rounded-lg border border-gray-200 ${className}`}
     >
       <svg
         width="100%"

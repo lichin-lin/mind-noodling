@@ -44,7 +44,7 @@ export function Example2() {
               y1={from.y + 24}
               x2={to.x + 72}
               y2={to.y + 24}
-              stroke="#999"
+              stroke="#666"
               strokeWidth={1.5}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

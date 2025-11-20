@@ -26,7 +26,7 @@
 
   /* Font Variables - Mona Sans supports these axes */
   --font-weight: 400; /* 200-900 */
-  --font-weight-bold: 600; /* for headings */
+  --font-weight-bold: 500; /* for headings */
   --font-width: 100; /* 75-125 (condensed to expanded) */
   --font-stretch: normal; /* Can be used if needed */
 }
@@ -195,6 +195,10 @@ p {
   margin: 0 0 0.9rem;
   line-height: 1.7;
   color: var(--color-fg);
+}
+
+p strong {
+  font-weight: var(--font-weight-bold);
 }
 
 code {

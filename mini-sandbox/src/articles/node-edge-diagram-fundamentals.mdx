@@ -1,4 +1,7 @@
 import Example1 from '../examples/Example1'
+import Example2 from '../examples/Example2'
+import Example3 from '../examples/Example3'
+import Example4 from '../examples/Example4'
 
 # Short Notes on Diagram Workflows
 
@@ -16,201 +19,28 @@ So you start with the most honest primitive: position. Below, a dark canvas hold
 
 ---
 
-### 2. Mental Model of a Diagram
+### 2. Connecting Nodes with Edges
 
-A diagram = `data model` (nodes + edges + metadata) + `rendering pipeline` (layout → layering → drawing → interaction hooks).
+Now that we have positioned nodes, the next step is to establish relationships. An edge is just a line connecting two points—but those two points carry meaning. They declare dependency, causation, sequence, or flow. Below, we introduce edges to connect our nodes. Notice how even a simple straight line begins to tell a story: which step feeds into the next, which tasks can run in parallel, where bottlenecks might emerge.
 
-We'll adopt a minimal canonical shape:
-
-```ts title="Data Model Draft"
-type Node = {
-  id: string
-  x: number
-  y: number
-  width: number
-  height: number
-  label?: string
-}
-type Edge = {
-  id: string
-  from: string
-  to: string
-  // path data comes later
-}
-interface DiagramState {
-  nodes: Node[]
-  edges: Edge[]
-  viewport: { x: number; y: number; k: number } // pan (x,y), zoom k
-}
-```
-
-### 3. SVG Coordinate System & Viewport
-
-Key ideas: user units, viewBox, transforms, preserving aspect ratio, pan vs. zoom layering strategy (wrap all content in one `<g>` with a combined transform). We'll later integrate `d3-zoom`.
-
-<SandpackPlayground preset="svg-coords" />
-
-### 4. Representing Nodes
-
-- Primitive choices: `<rect>`, `<circle>`, `<foreignObject>` for rich HTML, paths for custom silhouettes.
-- Styling separation: use classes + CSS variables for theme toggling.
-- Hit-box vs. visual shape; larger transparent rect can improve usability.
-
-### 5. Edges: Lines, Curves, Orthogonal Routing
-
-We start with a straight line: `M x1 y1 L x2 y2`. Then progress to smoothed quadratic/cubic curves and orthogonal (Manhattan) segments.
-
-```js title="Straight Edge Path"
-function straightPath(a, b) {
-  return `M ${a.x + a.width / 2} ${a.y + a.height / 2} L ${b.x + b.width / 2} ${
-    b.y + b.height / 2
-  }`
-}
-```
-
-### 6. Path Data Primer (M L H V C S Q T A Z)
-
-We'll build a mini interactive inspector to tweak commands and visualize control points. (Future Sandpack: `path-primer`).
-
-### 7. Building Adjacency & Derived Data
-
-Transform raw arrays into maps for O(1) lookup; precompute edge endpoints, bounding boxes, center points.
-
-### 8. Rendering Order & Layering
-
-Recommended stacking: edges below nodes; interaction overlays above nodes; debug layer toggle.
-
-### 9. Interaction Fundamentals (Hover, Focus, Selection)
-
-Use `pointerenter/leave`, maintain selection in state, apply CSS class toggles. Keyboard navigation: maintain an order list for arrow keys.
-
-### 10. Zoom & Pan (d3-zoom Intro)
-
-We'll wrap `<g id="scene">` and apply unified transform. Debounce expensive recomputations; recompute edge paths only when node coordinates change, not on pure zoom.
-
-<SandpackPlayground preset="zoom-pan" />
-
-### 11. Dragging Nodes (Pointer vs d3-drag)
-
-Compare implementing with raw pointer events (for tighter control + batching) vs. `d3-drag` convenience.
-
-### 12. Edge Recalculation on Drag
-
-Efficient invalidation: track edges needing recompute with sets keyed by node id.
-
-### 13. Layout Strategies Overview
-
-- Manual / absolute
-- Grid / pack
-- Force-directed (basic d3-force)
-- Layered (DAG, longest-path / Coffman-Graham) – future deep dive
-- External: ELK, Dagre (placeholder integration discussion)
-
-### 14. Edge Routing Strategies
-
-Naive straight lines vs. obstacle avoidance (simple waypoint around node bounding boxes) vs. smoothing algorithms.
-
-### 15. Performance Considerations
-
-- Minimize DOM mutations: reuse elements, keyed updates.
-- Avoid layout thrash: read, then write grouped in animation frame.
-- Virtualization for very large graphs (clip to viewport + margin).
-- Caching path strings.
-
-### 16. Hit Testing Techniques
-
-Bounding box first, then precise path length measurement (`getTotalLength`, `getPointAtLength`). Consider spatial indexing (R-Tree) for large diagrams.
-
-### 17. Accessibility & Semantics
-
-ARIA roles: treat nodes as buttons if interactive; focus ring styling; describing edges with labels for screen readers optionally hidden visually.
-
-### 18. Debugging Path Data
-
-Overlay control points, color segments, dump parsed commands, interactive scrubber for `t` parameter along curve.
-
-### 19. Exporting / Serialization
-
-SVG to string + download; foreignObject caveats; rasterization via `<canvas>` drawImage; preserving embedded fonts.
-
-### 20. Progressive Enhancement Roadmap
-
-Planned: dynamic layout switching, live path editing, edge bundling, mini-map viewport indicator.
+<Example2 />
 
 ---
 
-### First Demo: The Smallest Honest Diagram
+### 3. When Complexity Overwhelms
 
-We begin with two nodes and one edge not because it is impressive, but because everything later builds on the discipline of making even this tiny scene clean, readable, and extensible. From here we will branch: add ports, experiment with curved paths, attach interaction handlers, then invite layout algorithms to reposition nodes without breaking our mental model.
+But things can quickly spiral out of control. Add ten nodes to a fixed-size canvas, and suddenly your carefully placed primitives become a tangled mess. Edges cross in ways that obscure meaning rather than clarify it. Nodes overlap, crowd the edges, or cluster in awkward corners. What felt intentional with four blocks now feels chaotic with ten. This is the moment when manual positioning breaks down, and you start craving layout algorithms, collision detection, and zoom controls. Below, see how even a modest increase in node count transforms a clean diagram into visual noise.
 
-<SandpackPlayground preset="basic-diagram" />
-
-```jsx title="BasicDiagram.jsx"
-import React from 'react'
-const nodes = [
-  { id: 'A', x: 40, y: 40, width: 80, height: 40, label: 'A' },
-  { id: 'B', x: 240, y: 160, width: 80, height: 40, label: 'B' },
-]
-const edges = [{ id: 'e1', from: 'A', to: 'B' }]
-
-function straightPath(a, b) {
-  return `M ${a.x + a.width / 2} ${a.y + a.height / 2} L ${b.x + b.width / 2} ${
-    b.y + b.height / 2
-  }`
-}
-
-export default function BasicDiagram() {
-  const nodeById = Object.fromEntries(nodes.map((n) => [n.id, n]))
-  return (
-    <svg width={400} height={240} style={{ background: 'var(--bg-subtle)' }}>
-      {/* Edges */}
-      {edges.map((e) => {
-        const a = nodeById[e.from]
-        const b = nodeById[e.to]
-        return (
-          <path
-            key={e.id}
-            d={straightPath(a, b)}
-            stroke="#555"
-            strokeWidth={2}
-            fill="none"
-          />
-        )
-      })}
-      {/* Nodes */}
-      {nodes.map((n) => (
-        <g key={n.id}>
-          <rect
-            x={n.x}
-            y={n.y}
-            width={n.width}
-            height={n.height}
-            rx={6}
-            fill="#fff"
-            stroke="#333"
-          />
-          <text
-            x={n.x + n.width / 2}
-            y={n.y + n.height / 2}
-            dominantBaseline="middle"
-            textAnchor="middle"
-            fontSize={14}
-          >
-            {n.label}
-          </text>
-        </g>
-      ))}
-    </svg>
-  )
-}
-```
-
-> NOTE: Sandpack preset definitions are placeholders; once the presets are added to `sandpack/presets.js`, the embedded examples become live, tweakable sandboxes.
+<Example3 />
 
 ---
 
-### Where We Go Next
+### 4. Layout Algorithms to the Rescue
 
-In the next chapter we will shape space: introducing viewBox discipline, pan & zoom transforms, and the first performance guardrails. Then we will explore the grammar of path data with an interactive inspector—because once you internalize how curves breathe, routing decisions become design rather than guesswork. Later chapters will narrate the tipping point from handcrafted layout to algorithmic assistance, and the choice between bespoke primitives and framework abstractions like React Flow. If a particular chapter resonates with a challenge you face, treat it as a fork you can follow independently.
+This is where layout algorithms become essential. Instead of manually placing each node, you define the relationships and let the algorithm determine optimal positions. **d3-dag** is one of the most powerful libraries for this—it handles directed acyclic graphs with sophisticated layering strategies, edge crossing minimization, and hierarchical positioning.
 
-_This post is intentionally iterative. As each chapter matures, narrative sections will replace placeholders, and the demos will accumulate richer instrumentation for learning._
+Below, the same 10 nodes are now arranged using Sugiyama layout with simplex layering. Notice how the algorithm automatically organizes nodes into clear hierarchical levels, minimizes edge crossings, and maintains consistent spacing. The gradient fill indicates depth: lighter nodes are at higher layers, darker ones deeper in the hierarchy. What was chaos becomes comprehensible structure.
+
+<Example4 />
+
+---

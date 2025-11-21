@@ -1,6 +1,8 @@
 import Canvas from './Canvas'
 import BaseNode from './node'
 import Edge from './edge'
+import { generateRoundedVerticalPath } from './pathUtils'
+import { motion } from 'motion/react'
 import {
   graphStratify,
   sugiyama,
@@ -12,14 +14,13 @@ import {
 
 type NodeData = { id: string; parentIds: string[] }
 
-export function Example4() {
+export function Example6() {
   const nodes = Array.from({ length: 10 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
-    // Randomly assign 1–2 parents from earlier nodes
     if (i > 0) {
       const possibleParents = Array.from({ length: i }, (_, j) => String(j))
-      const numParents = Math.floor(Math.random() * 2) + 1 // 1 or 2 parents
+      const numParents = 1
       for (let p = 0; p < numParents; p++) {
         const parent =
           possibleParents[Math.floor(Math.random() * possibleParents.length)]
@@ -37,7 +38,7 @@ export function Example4() {
   const layout = sugiyama()
     .layering(layeringSimplex())
     .decross(decrossTwoLayer().order(twolayerGreedy().base(twolayerAgg())))
-    .nodeSize([200, 72])
+    .nodeSize([200, 100])
 
   const { width, height } = layout(dag)
 
@@ -47,19 +48,55 @@ export function Example4() {
 
   return (
     <Canvas>
+      <defs>
+        <style>
+          {`
+            @keyframes flowParticle {
+              0% {
+                stroke-dashoffset: 100%;
+              }
+              100% {
+                stroke-dashoffset: 0%;
+              }
+            }
+            .particle-edge {
+              stroke-dasharray: 4 100;
+              animation: flowParticle 20s linear infinite;
+            }
+          `}
+        </style>
+      </defs>
       <g transform={`translate(${offsetX}, ${offsetY})`}>
-        {/* Edges */}
+        {/* Curved Edges with Particles */}
         {[...dag.links()].map((link, index) => {
+          const path = generateRoundedVerticalPath(link.source, link.target)
           const sourceNodeIndex = parseInt(link.source.data.id)
+          const delay = sourceNodeIndex * 0.1 + index * 0.1
+
           return (
-            <Edge
-              key={index}
-              x1={link.source.x}
-              y1={link.source.y}
-              x2={link.target.x}
-              y2={link.target.y}
-              delay={sourceNodeIndex * 0.2}
-            />
+            <g key={index}>
+              {/* Base edge (static) */}
+              <Edge
+                x1={0}
+                y1={0}
+                x2={0}
+                y2={0}
+                curved={true}
+                pathData={path}
+                delay={0.3}
+              />
+              {/* Animated particle edge */}
+              <motion.path
+                d={path}
+                fill="none"
+                stroke="#000"
+                strokeWidth={4}
+                className="particle-edge"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              />
+            </g>
           )
         })}
 
@@ -83,4 +120,5 @@ export function Example4() {
     </Canvas>
   )
 }
-export default Example4
+
+export default Example6

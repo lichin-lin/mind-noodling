@@ -1,6 +1,7 @@
 import Canvas from './Canvas'
 import BaseNode from './node'
 import Edge from './edge'
+import { generateRoundedVerticalPath } from './pathUtils'
 import {
   graphStratify,
   sugiyama,
@@ -12,14 +13,13 @@ import {
 
 type NodeData = { id: string; parentIds: string[] }
 
-export function Example4() {
+export function Example5() {
   const nodes = Array.from({ length: 10 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
-    // Randomly assign 1–2 parents from earlier nodes
     if (i > 0) {
       const possibleParents = Array.from({ length: i }, (_, j) => String(j))
-      const numParents = Math.floor(Math.random() * 2) + 1 // 1 or 2 parents
+      const numParents = 1
       for (let p = 0; p < numParents; p++) {
         const parent =
           possibleParents[Math.floor(Math.random() * possibleParents.length)]
@@ -37,7 +37,7 @@ export function Example4() {
   const layout = sugiyama()
     .layering(layeringSimplex())
     .decross(decrossTwoLayer().order(twolayerGreedy().base(twolayerAgg())))
-    .nodeSize([200, 72])
+    .nodeSize([200, 100])
 
   const { width, height } = layout(dag)
 
@@ -48,17 +48,19 @@ export function Example4() {
   return (
     <Canvas>
       <g transform={`translate(${offsetX}, ${offsetY})`}>
-        {/* Edges */}
+        {/* Curved Edges */}
         {[...dag.links()].map((link, index) => {
-          const sourceNodeIndex = parseInt(link.source.data.id)
+          const path = generateRoundedVerticalPath(link.source, link.target)
           return (
             <Edge
               key={index}
-              x1={link.source.x}
-              y1={link.source.y}
-              x2={link.target.x}
-              y2={link.target.y}
-              delay={sourceNodeIndex * 0.2}
+              x1={0}
+              y1={0}
+              x2={0}
+              y2={0}
+              curved={true}
+              pathData={path}
+              delay={0.3}
             />
           )
         })}
@@ -69,7 +71,6 @@ export function Example4() {
           const darkness = 256 - estimatedLayer * 7.5
           const clamped = Math.max(darkness, 200)
           const fill = `rgb(${clamped},${clamped},${clamped})`
-
           return (
             <g
               key={node.data.id}
@@ -83,4 +84,5 @@ export function Example4() {
     </Canvas>
   )
 }
-export default Example4
+
+export default Example5

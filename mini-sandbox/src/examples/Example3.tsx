@@ -1,6 +1,6 @@
-import { motion } from 'motion/react'
 import Canvas from './Canvas'
 import BaseNode from './node'
+import Edge from './edge'
 import type { NodeProps } from './node'
 
 interface Edge {
@@ -36,17 +36,12 @@ export function Example3() {
           const from = getNodeById(edge.source)
           const to = getNodeById(edge.target)
           return (
-            <motion.line
+            <Edge
               key={`${edge.source}-${edge.target}`}
               x1={from.x + 72}
               y1={from.y + 24}
               x2={to.x + 72}
               y2={to.y + 24}
-              stroke="#666"
-              strokeWidth={1.5}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
             />
           )
         })}

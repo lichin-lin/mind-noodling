@@ -9,7 +9,7 @@ interface Edge {
 }
 
 export function Example3() {
-  const nodes: NodeProps[] = Array.from({ length: 10 }, (_, i) => ({
+  const nodes: NodeProps[] = Array.from({ length: 8 }, (_, i) => ({
     id: String(i + 1),
     x: Math.floor(Math.random() * 700),
     y: Math.floor(Math.random() * 500),

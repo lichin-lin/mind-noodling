@@ -14,7 +14,7 @@ import {
 type NodeData = { id: string; parentIds: string[] }
 
 export function Example7() {
-  const nodes = Array.from({ length: 10 }, (_, i) => {
+  const nodes = Array.from({ length: 8 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
     if (i > 0) {

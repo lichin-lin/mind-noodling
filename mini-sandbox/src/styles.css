@@ -3,7 +3,8 @@
 :root {
   /* Neutrals */
   --color-bg: #ffffff;
-  --color-fg: #111827;
+  --color-fg: #444444;
+  --color-fg-emphasis: #222222;
   --color-muted: #6b7280;
   --color-border: #e5e7eb;
   --color-surface: #f9fafb;
@@ -199,6 +200,7 @@ p {
 
 p strong {
   font-weight: var(--font-weight-bold);
+  color: var(--color-fg-emphasis);
 }
 
 code {

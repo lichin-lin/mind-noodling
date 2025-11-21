@@ -2,7 +2,6 @@ import Canvas from './Canvas'
 import BaseNode from './node'
 import Edge from './edge'
 import { generateRoundedVerticalPath } from './pathUtils'
-import { motion } from 'motion/react'
 import {
   graphStratify,
   sugiyama,
@@ -14,7 +13,7 @@ import {
 
 type NodeData = { id: string; parentIds: string[] }
 
-export function Example6() {
+export function Example7() {
   const nodes = Array.from({ length: 10 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
@@ -49,34 +48,29 @@ export function Example6() {
   return (
     <Canvas>
       <defs>
-        <style>
-          {`
-            @keyframes dash {
-              0% {
-                stroke-dashoffset: 100%;
-              }
-              100% {
-                stroke-dashoffset: 0%;
-              }
-            }
-            .fill-edge {
-              stroke-dasharray: 100%;
-              stroke-dashoffset: 100%;
-              animation: dash 2s ease-in-out forwards;
-            }
-          `}
-        </style>
+        {[...dag.links()].map((link, index) => {
+          const pathId = `path-${index}`
+          const path = generateRoundedVerticalPath(link.source, link.target)
+          return (
+            <path
+              key={pathId}
+              id={pathId}
+              d={path}
+              fill="none"
+              transform={`translate(${offsetX}, ${offsetY})`}
+            />
+          )
+        })}
       </defs>
       <g transform={`translate(${offsetX}, ${offsetY})`}>
-        {/* Curved Edges with Particles */}
+        {/* Curved Edges with Animated Circles */}
         {[...dag.links()].map((link, index) => {
           const path = generateRoundedVerticalPath(link.source, link.target)
-          const sourceNodeIndex = parseInt(link.source.data.id)
-          const delay = sourceNodeIndex * 0.3 + index * 0.2
+          const pathId = `path-${index}`
 
           return (
-            <g key={index}>
-              {/* Base edge (static) */}
+            <g key={`edge-${index}`}>
+              {/* Base edge */}
               <Edge
                 x1={0}
                 y1={0}
@@ -84,23 +78,20 @@ export function Example6() {
                 y2={0}
                 curved={true}
                 pathData={path}
-                delay={0}
-                stroke="#CCC"
+                delay={0.3}
               />
-              {/* Animated fill edge */}
-              <motion.path
-                d={path}
-                fill="none"
-                stroke="#666"
-                strokeWidth={1.5}
-                className="fill-edge"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.5, delay: 0.5 }}
-                style={{
-                  animationDelay: `${delay}s`,
-                }}
-              />
+              {/* Animated circle on every other edge */}
+              {index % 2 === 0 && (
+                <circle r={3} fill="#000">
+                  <animateMotion
+                    dur="3.5s"
+                    begin={`${index * 0.2}s`}
+                    repeatCount="indefinite"
+                  >
+                    <mpath href={`#${pathId}`} />
+                  </animateMotion>
+                </circle>
+              )}
             </g>
           )
         })}
@@ -126,4 +117,4 @@ export function Example6() {
   )
 }
 
-export default Example6
+export default Example7

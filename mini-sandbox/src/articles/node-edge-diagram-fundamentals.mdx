@@ -4,6 +4,7 @@ import Example3 from '../examples/Example3'
 import Example4 from '../examples/Example4'
 import Example5 from '../examples/Example5'
 import Example6 from '../examples/Example6'
+import Example7 from '../examples/Example7'
 
 # Building Interactive Workflow Diagrams
 
@@ -50,6 +51,28 @@ This is where we start exploring layout algorithms. To tame the chaos, we need a
 One of the most popular approaches is the **Sugiyama framework** (Layered Graph Drawing). Introduced by Kozo Sugiyama in [1981](https://ieeexplore.ieee.org/document/4308636), it revolutionized how we visualize hierarchical structures. The goal is simple but powerful: arrange nodes in layers so that edges flow in a single direction (usually top-to-bottom) with minimal crossing.
 
 <Example4 />
+```javascript
+
+import {(graphStratify, sugiyama, layeringSimplex)} from 'd3-dag'
+
+// Build a directed acyclic graph from your data
+const builder = graphStratify()
+.id((d) => d.id)
+.parentIds((d) => d.parentIds)
+
+const dag = builder(nodes)
+
+// Apply Sugiyama layout algorithm
+const layout = sugiyama()
+.layering(layeringSimplex()) // Assign nodes to layers
+.decross(decrossTwoLayer()) // Minimize edge crossings
+.nodeSize([150, 60]) // Set node dimensions
+
+const { width, height } = layout(dag) // Get calculated dimensions
+
+// Now each node has x, y coordinates automatically assigned
+
+````
 
 With the algorithm in charge, the diagram suddenly makes sense. We have moved from manual placement to **structural clarity**.
 
@@ -61,12 +84,98 @@ Now that we have structure, we can refine how connections flow between nodes. St
 
 <Example5 />
 
+```javascript
+const generateRoundedVerticalPath = (from, to) => {
+  const deltaX = to.x - from.x
+  const absDeltaX = Math.abs(deltaX)
+
+  // Use straight line if nodes are vertically aligned
+  if (absDeltaX < 10) {
+    return `M ${from.x},${from.y} L ${to.x},${to.y}`
+  }
+
+  const cornerRadius = 12
+  const verticalSplit = (from.y + to.y) / 2
+  const directionX = deltaX > 0 ? 1 : -1
+
+  // Create path with rounded 90-degree turns
+  return `
+    M ${from.x},${from.y}
+    L ${from.x},${verticalSplit - cornerRadius}
+    A ${cornerRadius},${cornerRadius} 0 0 ${directionX > 0 ? 0 : 1}
+      ${from.x + directionX * cornerRadius},${verticalSplit}
+    L ${to.x - directionX * cornerRadius},${verticalSplit}
+    A ${cornerRadius},${cornerRadius} 0 0 ${directionX > 0 ? 1 : 0}
+      ${to.x},${verticalSplit + cornerRadius}
+    L ${to.x},${to.y}
+  `
+}
+````
+
 ---
 
 ### 6. Bringing Edges to Life
 
 Static lines show structure, but they don't convey **state**. Is data flowing? Is a process running? Are dependencies being resolved in real-time?
 
-By animating particles along the edges, we add meaning. The moving dots represent data traveling from one node to the next, making the diagram feel alive and responsive.
+Instead of particles, we can use a simpler approach: animating the stroke itself. By using `stroke-dasharray` and `stroke-dashoffset`, we create a "drawing" effect—the edge appears to fill from start to finish, like watching data propagate through the connection.
 
 <Example6 />
+
+```css
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 100%;
+  }
+  100% {
+    stroke-dashoffset: 0%;
+  }
+}
+
+.fill-edge {
+  stroke-dasharray: 100%;
+  stroke-dashoffset: 100%;
+  animation: dash 2s ease-in-out forwards;
+}
+```
+
+```jsx
+<path
+  d={path}
+  className="fill-edge"
+  stroke="#BBB"
+  strokeWidth={1.5}
+  style={{ animationDelay: `${delay}s` }}
+/>
+```
+
+This technique reveals the flow direction instantly. Each edge draws itself in, creating a cascading effect that shows how information moves through the system. It's less about individual packets and more about the **act of connection** itself.
+
+---
+
+### 7. Motion Patterns for Status
+
+Different motion patterns can signal different states. A flowing particle shows active data transfer. But what if we want to represent **discrete events** instead of continuous flow?
+
+Using SVG's `<animateMotion>`, we can make circles travel along the exact path of the edge. This works perfectly for showing individual packets, messages, or tasks moving through the system.
+
+<Example7 />
+
+```jsx
+<svg>
+  <defs>
+    {/* Define the path once */}
+    <path id="edge-path-1" d={curvedPath} />
+  </defs>
+
+  {/* Static edge */}
+  <path d={curvedPath} stroke="#333" strokeWidth={1.5} />
+
+  {/* Animated circle following the path */}
+  <circle r={3} fill="#BBB">
+    <animateMotion dur="5s" begin="0.2s" repeatCount="indefinite">
+      <mpath href="#edge-path-1" />
+    </animateMotion>
+  </circle>
+</svg>
+```

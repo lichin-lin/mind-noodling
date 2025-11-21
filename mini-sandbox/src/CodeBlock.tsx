@@ -86,7 +86,7 @@ export function CodeBlock({
         language={language}
         lines={lines}
         words={words}
-        theme={themes.github}
+        theme={themes.vsDark}
       >
         <ReactCodeBlock.Code className="code-block-content">
           {({ isLineHighlighted }) => (

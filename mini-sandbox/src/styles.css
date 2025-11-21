@@ -13,6 +13,9 @@
   --color-codeblock-bg: #f8f7f5;
   --color-codeblock-border: #ece9e2;
 
+  --color-codeblock-bg-dark: #1e1e1e;
+  --color-codeblock-border-dark: #333333;
+
   /* Aliases for consistency with root app */
   --color-text-muted: var(--color-muted);
   --color-bd: var(--color-border);
@@ -46,9 +49,9 @@ body {
   margin: 1rem 0;
   position: relative;
   border-radius: 0.5rem;
-  border: 1px solid var(--color-codeblock-border);
+  border: 1px solid var(--color-codeblock-border-dark);
   overflow: hidden;
-  background-color: var(--color-codeblock-bg);
+  background-color: var(--color-codeblock-bg-dark);
 }
 
 .code-block-header {
@@ -56,8 +59,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0.5rem 0.5rem 1rem;
-  border-bottom: 1px solid var(--color-codeblock-border);
-  background-color: var(--color-codeblock-bg);
+  border-bottom: 1px solid var(--color-codeblock-border-dark);
+  background-color: var(--color-codeblock-bg-dark);
 }
 
 .code-block-language {
@@ -84,7 +87,7 @@ body {
 }
 
 .code-block-copy-btn:hover {
-  background-color: var(--color-code-border);
+  background-color: var(--color-code-border-dark);
   color: var(--color-fg);
 }
 
@@ -94,7 +97,7 @@ body {
   width: 100%;
   font-size: 0.875rem;
   line-height: 1.7;
-  background-color: var(--color-codeblock-bg);
+  background-color: var(--color-codeblock-bg-dark);
 }
 
 pre.code-block-content {

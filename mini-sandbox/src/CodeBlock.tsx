@@ -22,7 +22,7 @@ export function CodeBlock({
   const [copied, setCopied] = useState(false)
   const language = className?.replace(/language-/, '') || 'text'
 
-  const getCodeText = (node) => {
+  const getCodeText = (node: any): string => {
     if (typeof node === 'string') return node
     if (Array.isArray(node)) return node.map(getCodeText).join('')
     if (node?.props?.children) return getCodeText(node.props.children)

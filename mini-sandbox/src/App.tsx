@@ -4,7 +4,7 @@ import { CodeBlock } from './CodeBlock'
 
 export default function App() {
   const components = {
-    pre: (props) => {
+    pre: (props: any) => {
       if (props.children?.type === 'code') {
         console.log(props)
 

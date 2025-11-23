@@ -5,6 +5,9 @@ import Example4 from '../examples/Example4'
 import Example5 from '../examples/Example5'
 import Example6 from '../examples/Example6'
 import Example7 from '../examples/Example7'
+import Example8 from '../examples/Example8'
+import Example9 from '../examples/Example9'
+import Example10 from '../examples/Example10'
 
 # Building Interactive Workflow Diagrams
 
@@ -179,3 +182,90 @@ Using SVG's `<animateMotion>`, we can make circles travel along the exact path o
   </circle>
 </svg>
 ```
+
+Notice how only some edges have moving circles. This selectivity is powerful—it lets you highlight specific paths, show different traffic patterns, or distinguish between active and idle connections.
+
+---
+
+### 8. Rich Status Patterns
+
+Real systems usually involved states between every two nodes. A connection might be idle, actively processing, completed, or even failed. Each state carries meaning, and the challenge is making that meaning instantly visible without adding clutter.
+
+For example, a slow pulse says "waiting, not urgent." A fast pulse says "actively processing." A fill animation says "completed, permanent." This isn't decoration—it's **status encoded as motion**.
+
+```jsx
+const AnimatedEdge = ({ path, status }) => {
+  const [localState, setLocalState] = useState(status)
+
+  // IDLE: Slow, subtle pulse
+  // PROCESSING: Fast, bright pulse with gradient
+  // COMPLETED: Fill animation with success color
+
+  return (
+    <AnimatePresence mode="wait">
+      {localState === 'IDLE' && (
+        <circle r={25} fill="url(#idle-gradient)">
+          <animateMotion dur="6s" repeatCount="indefinite">
+            <mpath href="#path" />
+          </animateMotion>
+        </circle>
+      )}
+
+      {localState === 'PROCESSING' && (
+        <circle r={30} fill="url(#processing-gradient)">
+          <animateMotion dur="2s" repeatCount="indefinite">
+            <mpath href="#path" />
+          </animateMotion>
+        </circle>
+      )}
+
+      {localState === 'COMPLETED' && (
+        <path d={path} className="edge-completed" />
+      )}
+    </AnimatePresence>
+  )
+}
+```
+
+<Example8 />
+
+---
+
+### 9. Scaling with Zoom and Pan
+
+As diagrams grow, a fixed viewport becomes limiting. You need to see the whole picture, but also zoom into specific details. Thirty nodes? A hundred? The same principles apply, but now you need navigation.
+
+**Zoom and pan** aren't just convenience features—they change how you explore the diagram. Zoom out to see overall structure. Zoom in to examine individual connections. Pan to follow a specific path through the system.
+
+```javascript
+import { select, zoom } from 'd3'
+
+const zoomBehavior = zoom()
+  .scaleExtent([0.2, 5]) // Min/max zoom levels
+  .on('zoom', (event) => {
+    // Apply transform to your SVG groups
+    select('#edges-group').attr('transform', event.transform)
+    select('#nodes-overlay').style(
+      'transform',
+      `translate(${event.transform.x}px, ${event.transform.y}px) 
+       scale(${event.transform.k})`
+    )
+  })
+
+// Attach to container
+select(containerRef).call(zoomBehavior)
+```
+
+<Example9 />
+
+This is where diagrams become **explorable**. You're not just looking at a static map anymore. You're navigating through your system, choosing what to focus on, discovering patterns at different scales.
+
+---
+
+### 10. When Edges Overlap
+
+As relationships grow more complex, edges start crossing each other. Multiple connections converge on the same nodes. What was clear with a few edges becomes a tangled mess with many. and the core challenge remains: **some structures are inherently dense**, and no amount of clever layout will make every edge perfectly clear at once.
+
+<Example10 />
+
+The diagram above lets you click on nodes to highlight their connections. It doesn't eliminate the overlap—it just makes it possible to **selectively focus**. Sometimes that's all you can do: accept the complexity and give users the tools to navigate it.

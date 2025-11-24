@@ -8,6 +8,7 @@ import Example7 from '../examples/Example7'
 import Example8 from '../examples/Example8'
 import Example9 from '../examples/Example9'
 import Example10 from '../examples/Example10'
+import Example11 from '../examples/Example11'
 
 # Building Interactive Workflow Diagrams
 
@@ -275,3 +276,45 @@ The diagram below lets you click on nodes to highlight their connections. It doe
 <Example10 />
 
 This reveals a fundamental tension: **some structures are inherently dense**, and no amount of clever layout will make every edge perfectly clear at once. Sometimes the best approach isn't to eliminate the problem, but to give users simple interactions to navigate it themselves.
+
+---
+
+### 11. Maybe there's a way toward smart Routing
+
+We've been using Sugiyama layout, which works well for most hierarchical diagrams. For simple cases, it's more than enough.
+
+But there's a group of researchers who've spent years digging deeper into this problem. The [KIELER team](https://github.com/kieler) at Kiel University, working within the Eclipse Foundation, built **ELK.js** (Eclipse Layout Kernel)—a library that treats graph layout not as a solved problem, but as an active research area.
+
+<Example11 />
+
+The difference? **Smart edge routing.** ELK's edges navigate around nodes instead of cutting straight through. The algorithm treats routing as a pathfinding problem—edges actively avoid obstacles, maintaining clearance you can control with options like `spacing.edgeNode`.
+
+```javascript
+import ELK from 'elkjs/lib/elk.bundled'
+
+const elk = new ELK()
+
+const elkGraph = {
+  id: 'root',
+  layoutOptions: {
+    'elk.algorithm': 'layered',
+    'elk.direction': 'DOWN',
+    'elk.spacing.nodeNode': '40',
+    'elk.spacing.edgeNode': '80', // Control edge-to-node spacing
+  },
+  children: nodes.map((n) => ({
+    id: n.id,
+    width: 140,
+    height: 48,
+  })),
+  edges: edges.map((e) => ({
+    id: e.id,
+    sources: [e.source],
+    targets: [e.target],
+  })),
+}
+
+const layout = await elk.layout(elkGraph)
+```
+
+This is particularly valuable for dense graphs where d3-dag's straight connections would slice through unrelated nodes. ELK doesn't just minimize crossings; it respects the space nodes occupy. Even though the smart routing can sometimes feel over-engineered for simple graphs. But when you need it, nothing else comes close.

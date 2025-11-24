@@ -35,8 +35,8 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-text-muted);
-  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
-    "Courier New", monospace;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas,
+    'Courier New', monospace;
 }
 
 .code-block-copy-btn {
@@ -114,7 +114,7 @@
 }
 
 /* Prism syntax highlighting tokens */
-pre[class*="language-"] {
+pre[class*='language-'] {
   color: var(--color-fg);
   margin-top: 1rem !important;
 }

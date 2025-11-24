@@ -20,7 +20,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     ref
   ) => {
     return (
-      <div className="relative">
+      <div className="relative w-full h-auto my-8">
         {onReplay && (
           <button
             onClick={onReplay}
@@ -31,7 +31,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
         )}
         <div
           ref={enableZoom ? ref : null}
-          className={`my-4 w-full aspect-5/3 bg-gray-50/50 rounded-lg border border-gray-200 ${className}`}
+          className={`w-full aspect-5/3 bg-gray-50/50 rounded-lg border border-gray-200 ${className}`}
           style={
             enableZoom ? { cursor: 'grab', overflow: 'hidden' } : undefined
           }

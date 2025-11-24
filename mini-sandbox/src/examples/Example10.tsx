@@ -1,7 +1,7 @@
 import Canvas from './Canvas'
 import BaseNode from './node'
 import { generateRoundedVerticalPath } from './pathUtils'
-import { motion } from 'motion/react'
+import { motion, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 import {
   graphStratify,
@@ -26,7 +26,7 @@ export function Example10() {
     { id: '7', parentIds: ['0', '2', '4'] },
   ]
 
-  const [currentIndex, setCurrentIndex] = useState<string | null>(null)
+  const [currentIndex, setCurrentIndex] = useState<string | null>('1')
 
   const builder = graphStratify()
     .id((d: { id: string }) => d.id)
@@ -66,7 +66,7 @@ export function Example10() {
               <motion.path
                 d={path}
                 fill="none"
-                strokeWidth={1.5}
+                strokeWidth={2}
                 stroke="rgba(200, 200, 200, 1)"
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
@@ -76,38 +76,38 @@ export function Example10() {
         })}
 
         {/* Active Edges (render last, on top) */}
-        {links.map((link, index) => {
-          const isActive =
-            currentIndex === link.source.data.id ||
-            currentIndex === link.target.data.id
-          if (!isActive) return null
+        <AnimatePresence>
+          {links.map((link, index) => {
+            const isActive =
+              currentIndex === link.source.data.id ||
+              currentIndex === link.target.data.id
+            if (!isActive) return null
 
-          const path = generateRoundedVerticalPath(link.source, link.target)
-          return (
-            <g key={`active-${index}`}>
-              <motion.path
-                d={path}
-                fill="none"
-                strokeWidth={4}
-                stroke="rgba(255, 255, 255, 1)"
+            const path = generateRoundedVerticalPath(link.source, link.target)
+            return (
+              <motion.g
+                key={`active-${index}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-              />
-              <motion.path
-                d={path}
-                fill="none"
-                strokeWidth={2}
-                stroke="rgba(48, 48, 48, 1)"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-              />
-            </g>
-          )
-        })}
+                transition={{ duration: 0.2 }}
+              >
+                <path
+                  d={path}
+                  fill="none"
+                  strokeWidth={4}
+                  stroke="rgba(255, 255, 255, 1)"
+                />
+                <path
+                  d={path}
+                  fill="none"
+                  strokeWidth={3}
+                  stroke="rgba(48, 48, 48, 1)"
+                />
+              </motion.g>
+            )
+          })}
+        </AnimatePresence>
 
         {/* Nodes */}
         {dagNodes.map((node) => {

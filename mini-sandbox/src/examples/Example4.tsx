@@ -9,10 +9,12 @@ import {
   twolayerGreedy,
   twolayerAgg,
 } from 'd3-dag'
+import { useState } from 'react'
 
 type NodeData = { id: string; parentIds: string[] }
 
 export function Example4() {
+  const [replayKey, setReplayKey] = useState(0)
   const nodes = Array.from({ length: 8 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
@@ -46,7 +48,7 @@ export function Example4() {
   const offsetY = (600 - height) / 2
 
   return (
-    <Canvas>
+    <Canvas onReplay={() => setReplayKey((prev) => prev + 1)}>
       <g transform={`translate(${offsetX}, ${offsetY})`}>
         {/* Edges */}
         {[...dag.links()].map((link, index) => {

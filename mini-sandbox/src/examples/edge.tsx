@@ -19,7 +19,7 @@ export function Edge({
   y2,
   delay = 0.2,
   stroke = '#666',
-  strokeWidth = 1.5,
+  strokeWidth = 2,
   curved = false,
   pathData,
 }: EdgeProps) {

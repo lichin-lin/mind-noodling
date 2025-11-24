@@ -15,6 +15,8 @@ import {
 type NodeData = { id: string; parentIds: string[] }
 type EdgeStatus = 'IDLE' | 'PROCESSING' | 'COMPLETED'
 
+let globalReplayTrigger = 0
+
 interface AnimatedEdgeProps {
   path: string
   index: number
@@ -29,6 +31,17 @@ const AnimatedEdge = ({ path, index, status }: AnimatedEdgeProps) => {
   const idleAnimationRunTime = '6s'
   const processingAnimationRunTime = '2s'
   const [localState, setLocalState] = useState(status)
+  const [replayTrigger, setReplayTrigger] = useState(0)
+
+  useEffect(() => {
+    const checkReplay = setInterval(() => {
+      if (globalReplayTrigger !== replayTrigger) {
+        setReplayTrigger(globalReplayTrigger)
+        setLocalState(status)
+      }
+    }, 100)
+    return () => clearInterval(checkReplay)
+  }, [replayTrigger, status])
 
   useEffect(() => {
     if (localState === 'PROCESSING') {
@@ -130,6 +143,13 @@ const AnimatedEdge = ({ path, index, status }: AnimatedEdgeProps) => {
 }
 
 export function Example8() {
+  const [replayKey, setReplayKey] = useState(0)
+
+  const handleReplay = () => {
+    globalReplayTrigger++
+    setReplayKey((prev) => prev + 1)
+  }
+
   const nodes = Array.from({ length: 8 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
@@ -162,7 +182,7 @@ export function Example8() {
   const offsetY = (600 - height) / 2
 
   return (
-    <Canvas>
+    <Canvas onReplay={handleReplay}>
       <defs>
         <style>
           {`
@@ -174,7 +194,7 @@ export function Example8() {
           `}
         </style>
       </defs>
-      <g transform={`translate(${offsetX}, ${offsetY})`}>
+      <g key={replayKey} transform={`translate(${offsetX}, ${offsetY})`}>
         {/* Curved Edges with States */}
         {[...dag.links()].map((link, index) => {
           const path = generateRoundedVerticalPath(link.source, link.target)

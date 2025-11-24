@@ -174,13 +174,8 @@ export function Example9() {
 
           hasMovedEnough = true
 
-          select('#edges-group').attr('transform', event.transform.toString())
-          select('#nodes-overlay')
-            .style('transform-origin', '0 0')
-            .style(
-              'transform',
-              `translate(${event.transform.x}px, ${event.transform.y}px) scale(${event.transform.k})`
-            )
+          // Apply transform to the entire diagram group (including centered offset)
+          select('#diagram-group').attr('transform', event.transform.toString())
           updateGrid(event)
         })
 
@@ -234,7 +229,7 @@ export function Example9() {
           `}
         </style>
       </defs>
-      <g transform={`translate(${offsetX}, ${offsetY})`}>
+      <g id="diagram-group" transform={`translate(${offsetX}, ${offsetY})`}>
         <g id="edges-group">
           {[...dag.links()].map((link, index) => {
             const path = generateRoundedVerticalPath(link.source, link.target)

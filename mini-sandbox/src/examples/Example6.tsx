@@ -3,6 +3,7 @@ import BaseNode from './node'
 import Edge from './edge'
 import { generateRoundedVerticalPath } from './pathUtils'
 import { motion } from 'motion/react'
+import { useState } from 'react'
 import {
   graphStratify,
   sugiyama,
@@ -15,6 +16,7 @@ import {
 type NodeData = { id: string; parentIds: string[] }
 
 export function Example6() {
+  const [replayKey, setReplayKey] = useState(0)
   const nodes = Array.from({ length: 8 }, (_, i) => {
     const id = String(i)
     const parentIds: string[] = []
@@ -47,7 +49,7 @@ export function Example6() {
   const offsetY = (600 - height) / 2
 
   return (
-    <Canvas>
+    <Canvas onReplay={() => setReplayKey((prev) => prev + 1)}>
       <defs>
         <style>
           {`
@@ -67,7 +69,7 @@ export function Example6() {
           `}
         </style>
       </defs>
-      <g transform={`translate(${offsetX}, ${offsetY})`}>
+      <g key={replayKey} transform={`translate(${offsetX}, ${offsetY})`}>
         {/* Curved Edges with Particles */}
         {[...dag.links()].map((link, index) => {
           const path = generateRoundedVerticalPath(link.source, link.target)
@@ -91,8 +93,8 @@ export function Example6() {
               <motion.path
                 d={path}
                 fill="none"
-                stroke="#666"
-                strokeWidth={1.5}
+                stroke="#333"
+                strokeWidth={2}
                 className="fill-edge"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

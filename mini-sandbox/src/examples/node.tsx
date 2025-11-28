@@ -30,7 +30,7 @@ export const BaseNode = ({
   }
 
   return (
-    <div className="relative flex items-center gap-2 px-3 py-2 pl-3 font-normal text-gray-900 transition-all bg-white border border-gray-300 rounded-lg shadow cursor-pointer w-fit hover:bg-gray-50 min-w-[100px] min-h-10">
+    <div className="relative flex items-center gap-2 px-3 py-2 pl-3 font-normal text-gray-900 transition-all bg-white border border-gray-300 rounded-lg shadow-xs cursor-pointer w-fit hover:bg-gray-50 min-w-[100px] min-h-10">
       <div className="w-3 h-3 bg-gray-300 rounded-full" />
       <p className="m-0! max-w-[180px] truncate lowercase first-letter:uppercase text-xl">
         {id}

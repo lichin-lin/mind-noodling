@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import NodeEdgeDiagramFundamentals from './articles/node-edge-diagram-fundamentals-scrollytelling'
 import MdxArticle from './articles/node-edge-diagram-fundamentals.mdx'
 import { CodeBlock } from './CodeBlock'
 
@@ -27,15 +26,11 @@ export default function App() {
 
   return (
     <main>
-      {isMobile ? (
-        <div className="flex flex-col items-center px-4 pt-12">
-          <div className="w-full max-w-[720px]">
-            <MdxArticle components={components} />
-          </div>
+      <div className="flex flex-col items-center px-4 py-12">
+        <div className="w-full max-w-[720px] mt-16">
+          <MdxArticle components={components} />
         </div>
-      ) : (
-        <NodeEdgeDiagramFundamentals />
-      )}
+      </div>
     </main>
   )
 }

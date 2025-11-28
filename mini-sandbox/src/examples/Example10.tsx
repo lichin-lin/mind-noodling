@@ -2,7 +2,9 @@ import Canvas from './Canvas'
 import BaseNode from './node'
 import { generateRoundedVerticalPath } from './pathUtils'
 import { motion, AnimatePresence } from 'motion/react'
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
+import { select, zoom } from 'd3'
+import type { ZoomBehavior } from 'd3'
 import {
   graphStratify,
   sugiyama,
@@ -47,9 +49,37 @@ export function Example10() {
   const links = [...dag.links()]
   const dagNodes = [...dag.nodes()]
 
+  const zoomBehaviorRef = useRef<ZoomBehavior<HTMLDivElement, unknown> | null>(
+    null
+  )
+
+  const handleNodeCanvasRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
+
+    const nodeCanvasSelection = select(node)
+
+    if (zoomBehaviorRef.current) {
+      nodeCanvasSelection.on('.zoom', null)
+    }
+
+    const zoomBehavior = zoom<HTMLDivElement, unknown>()
+      .scaleExtent([0.2, 5])
+      .on('zoom', (event) => {
+        console.log(event.transform)
+
+        select('#diagram-group-10').attr(
+          'transform',
+          event.transform.toString()
+        )
+      })
+
+    zoomBehaviorRef.current = zoomBehavior
+    nodeCanvasSelection.call(zoomBehavior)
+  }, [])
+
   return (
-    <Canvas>
-      <g transform={`translate(${offsetX}, ${offsetY})`}>
+    <Canvas enableZoom ref={handleNodeCanvasRef}>
+      <g id="diagram-group-10" transform={`translate(${offsetX}, ${offsetY})`}>
         {/* Inactive Edges (render first, behind, all) */}
         {links.map((link, index) => {
           const path = generateRoundedVerticalPath(link.source, link.target)

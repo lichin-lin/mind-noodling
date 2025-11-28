@@ -31,9 +31,10 @@ export function Example11() {
         'elk.algorithm': 'layered',
         'elk.direction': 'DOWN',
         'elk.spacing.nodeNode': '40',
-        'elk.spacing.edgeNode': '80',
+        'elk.spacing.edgeNode': '60',
         'elk.layered.spacing.edgeNodeBetweenLayers': '30',
         'elk.layered.spacing.nodeNodeBetweenLayers': '30',
+        'elk.layered.spacing.portPort': '5',
       },
       children: nodes.map((n) => ({
         id: n.id,

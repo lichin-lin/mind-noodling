@@ -20,42 +20,48 @@ let globalReplayTrigger = 0
 interface AnimatedEdgeProps {
   path: string
   index: number
-  status: EdgeStatus
+  initialDelay: number
 }
 
-const AnimatedEdge = ({ path, index, status }: AnimatedEdgeProps) => {
+const AnimatedEdge = ({ path, index, initialDelay }: AnimatedEdgeProps) => {
   const maskId = `mask-${index}`
   const pathId = `path-${index}`
   const gradIdle = `idle-grad-${index}`
   const gradProc = `proc-grad-${index}`
-  const idleAnimationRunTime = '6s'
-  const processingAnimationRunTime = '2s'
-  const [localState, setLocalState] = useState(status)
+  const idleAnimationRunTime = '2s'
+  const processingAnimationRunTime = '4s'
+  const [localState, setLocalState] = useState<EdgeStatus>('IDLE')
   const [replayTrigger, setReplayTrigger] = useState(0)
 
   useEffect(() => {
     const checkReplay = setInterval(() => {
       if (globalReplayTrigger !== replayTrigger) {
         setReplayTrigger(globalReplayTrigger)
-        setLocalState(status)
+        setLocalState('IDLE')
       }
     }, 100)
     return () => clearInterval(checkReplay)
-  }, [replayTrigger, status])
+  }, [replayTrigger])
 
   useEffect(() => {
-    if (localState === 'PROCESSING') {
-      setTimeout(() => {
-        setLocalState('COMPLETED')
-      }, 4000)
-    }
+    // Start from IDLE
+    setLocalState('IDLE')
 
-    if (localState === 'IDLE') {
-      setTimeout(() => {
-        setLocalState('PROCESSING')
-      }, 4000)
+    // After initialDelay, move to PROCESSING
+    const toProcessing = setTimeout(() => {
+      setLocalState('PROCESSING')
+    }, initialDelay)
+
+    // After initialDelay + 3000ms, move to COMPLETED
+    const toCompleted = setTimeout(() => {
+      setLocalState('COMPLETED')
+    }, initialDelay + 3000)
+
+    return () => {
+      clearTimeout(toProcessing)
+      clearTimeout(toCompleted)
     }
-  }, [localState])
+  }, [initialDelay, replayTrigger])
 
   const renderEdgeAddOn = () => {
     return (
@@ -114,13 +120,11 @@ const AnimatedEdge = ({ path, index, status }: AnimatedEdgeProps) => {
   return (
     <g key={`edge-${index}`}>
       <defs>
-        {/* For Idle */}
         <linearGradient id={gradIdle} x1="0%" x2="100%" y1="0%" y2="0%">
           <stop stopColor="#CCC" stopOpacity="0" offset="0%" />
           <stop stopColor="#CCC" stopOpacity="0.6" offset="100%" />
         </linearGradient>
 
-        {/* For Processing */}
         <linearGradient id={gradProc} x1="0%" x2="100%" y1="0%" y2="0%">
           <stop stopColor="#007bff" stopOpacity="0" offset="0%" />
           <stop stopColor="#007bff" stopOpacity="1" offset="100%" />
@@ -198,14 +202,14 @@ export function Example8() {
         {/* Curved Edges with States */}
         {[...dag.links()].map((link, index) => {
           const path = generateRoundedVerticalPath(link.source, link.target)
-          const random = Math.random()
-          const status: EdgeStatus = random < 2 / 3 ? 'PROCESSING' : 'IDLE'
+          // Random delay between 0-3000ms for staggered animations
+          const initialDelay = Math.random() * 3000
           return (
             <AnimatedEdge
               path={path}
               index={index}
               key={`edge-${index}`}
-              status={status}
+              initialDelay={initialDelay}
             />
           )
         })}

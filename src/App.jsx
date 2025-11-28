@@ -4,16 +4,16 @@ import {
   Route,
   Link,
   useLocation,
-} from "react-router-dom";
-import { ThemeToggle } from "./components/ThemeToggle";
-import { ArticleList } from "./components/ArticleList";
-import { ArticlePage } from "./components/ArticlePage";
-import { AnimatePresence, motion } from "framer-motion";
-import "./App.css";
+} from 'react-router-dom'
+import { ThemeToggle } from './components/ThemeToggle'
+import { ArticleList } from './components/ArticleList'
+import { ArticlePage } from './components/ArticlePage'
+import { AnimatePresence, motion } from 'framer-motion'
+import './App.css'
 
 function Header() {
-  const location = useLocation();
-  const isHomePage = location.pathname === "/";
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-[var(--color-bg)]/50 border-b border-[var(--color-bd)]/50">
@@ -21,8 +21,8 @@ function Header() {
         {!isHomePage && (
           <Link
             to="/"
-            className="inline-flex items-center p-2 rounded hover:opacity-70 transition-opacity"
-            style={{ color: "var(--color-text-muted)" }}
+            className="inline-flex items-center p-2 transition-opacity rounded hover:opacity-70"
+            style={{ color: 'var(--color-text-muted)' }}
           >
             <svg
               className="w-4 h-4"
@@ -43,24 +43,24 @@ function Header() {
         <ThemeToggle />
       </div>
     </header>
-  );
+  )
 }
 
 function AnimatedRoutes() {
-  const location = useLocation();
+  const location = useLocation()
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: 1, filter: "blur(1px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        exit={{ opacity: 0, y: -1, filter: "blur(1px)" }}
+        initial={{ opacity: 0, y: 1, filter: 'blur(1px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        exit={{ opacity: 0, y: -1, filter: 'blur(1px)' }}
         transition={{
           duration: 0.25,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         }}
-        className="min-h-screen flex flex-col items-center transition-colors duration-300 pt-16"
+        className="flex flex-col items-center min-h-screen pt-16 transition-colors duration-300"
       >
         <Routes location={location}>
           <Route path="/" element={<ArticleList />} />
@@ -68,7 +68,7 @@ function AnimatedRoutes() {
         </Routes>
       </motion.div>
     </AnimatePresence>
-  );
+  )
 }
 
 function App() {
@@ -77,7 +77,7 @@ function App() {
       <Header />
       <AnimatedRoutes />
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App

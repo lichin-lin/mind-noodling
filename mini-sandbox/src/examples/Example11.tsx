@@ -35,6 +35,7 @@ export function Example11() {
         'elk.layered.spacing.edgeNodeBetweenLayers': '30',
         'elk.layered.spacing.nodeNodeBetweenLayers': '30',
         'elk.layered.spacing.portPort': '5',
+        'elk.layered.portAlignment': 'BEGIN',
       },
       children: nodes.map((n) => ({
         id: n.id,

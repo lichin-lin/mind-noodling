@@ -125,13 +125,13 @@ export function Example10() {
                 <path
                   d={path}
                   fill="none"
-                  strokeWidth={4}
+                  strokeWidth={3}
                   stroke="rgba(255, 255, 255, 1)"
                 />
                 <path
                   d={path}
                   fill="none"
-                  strokeWidth={3}
+                  strokeWidth={2}
                   stroke="rgba(48, 48, 48, 1)"
                 />
               </motion.g>

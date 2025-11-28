@@ -3,7 +3,7 @@ import MdxArticle from './articles/node-edge-diagram-fundamentals.mdx'
 import { CodeBlock } from './CodeBlock'
 
 export default function App() {
-  const [isMobile, setIsMobile] = useState(false)
+  const [, setIsMobile] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {

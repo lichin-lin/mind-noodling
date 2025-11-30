@@ -78,7 +78,7 @@ export function Example10() {
   }, [])
 
   return (
-    <Canvas enableZoom ref={handleNodeCanvasRef}>
+    <Canvas ref={handleNodeCanvasRef}>
       <g id="diagram-group-10" transform={`translate(${offsetX}, ${offsetY})`}>
         {/* Inactive Edges (render first, behind, all) */}
         {links.map((link, index) => {

@@ -9,6 +9,7 @@ import Example8 from '../examples/Example8'
 import Example9 from '../examples/Example9'
 import Example10 from '../examples/Example10'
 import Example11 from '../examples/Example11'
+import Example12 from '../examples/Example12'
 
 # Building Interactive Workflow Diagrams
 
@@ -316,3 +317,17 @@ const layout = await elk.layout(elkGraph)
 ```
 
 This is particularly valuable for dense graphs where d3-dag's straight connections would slice through unrelated nodes. ELK doesn't just minimize crossings; it respects the space nodes occupy. Even though the smart routing can sometimes feel over-engineered for simple graphs. But when you need it, nothing else comes close.
+
+---
+
+### 12. A Lightweight Layout Engine
+
+ELK is impressive, but it comes with trade-offs. The bundled worker weighs in at **~1.5 MB minified**, larger than many entire web apps. It ships dozens of algorithms and hundreds of configuration options, some of which you'll never touch.
+
+For embedded diagrams or projects where bundle size matters, that's a lot of overhead for "put nodes in layers." So what if we built just enough? A layout engine that does one thing well: organize nodes into layers with clean, routed edges.
+
+<Example12 />
+
+This custom layout lives in a ~1,400 lines of TypeScript, simple enough to debug without diving into library internals. In the bundle it compiles to just a ~30kB, roughly **50× smaller** than ELK.js.
+
+The trade-off is real: you lose ELK's sophisticated obstacle avoidance and its library of alternative algorithms. But for small-to-medium DAGs where you control the structure, a focused implementation gives you something more valuable: **code you actually own**. You can tweak the layout engine or add features without waiting on upstream changes or fighting an unfamiliar codebase.

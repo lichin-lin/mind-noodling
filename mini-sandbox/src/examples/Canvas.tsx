@@ -6,6 +6,7 @@ interface CanvasProps {
   viewBox?: string
   enableZoom?: boolean
   onReplay?: () => void
+  svgRef?: React.Ref<SVGSVGElement>
 }
 
 const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
@@ -16,6 +17,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       viewBox = '0 0 800 600',
       enableZoom = false,
       onReplay,
+      svgRef,
     },
     ref
   ) => {
@@ -37,6 +39,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
           }
         >
           <svg
+            ref={svgRef}
             width="100%"
             height="100%"
             viewBox={viewBox}

@@ -130,9 +130,14 @@ const AnimatedEdge = ({ path, index, status }: AnimatedEdgeProps) => {
 }
 
 export function Example9() {
+  const [replayKey, setReplayKey] = useState(0)
   const zoomBehaviorRef = useRef<ZoomBehavior<HTMLDivElement, unknown> | null>(
     null
   )
+
+  const handleReplay = () => {
+    setReplayKey((k) => k + 1)
+  }
 
   const handleNodeCanvasRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
@@ -216,7 +221,7 @@ export function Example9() {
   const offsetY = (600 - height) / 2
 
   return (
-    <Canvas enableZoom ref={handleNodeCanvasRef}>
+    <Canvas enableZoom ref={handleNodeCanvasRef} onReplay={handleReplay}>
       <defs>
         <style>
           {`
@@ -229,7 +234,11 @@ export function Example9() {
           `}
         </style>
       </defs>
-      <g id="diagram-group" transform={`translate(${offsetX}, ${offsetY})`}>
+      <g
+        id="diagram-group"
+        key={replayKey}
+        transform={`translate(${offsetX}, ${offsetY})`}
+      >
         <g id="edges-group">
           {[...dag.links()].map((link, index) => {
             const path = generateRoundedVerticalPath(link.source, link.target)

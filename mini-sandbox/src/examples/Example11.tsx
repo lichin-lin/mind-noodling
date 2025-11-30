@@ -1,5 +1,6 @@
 import Canvas from './Canvas'
 import Edge from './edge'
+import { BaseNode } from './node'
 import { useState, useEffect } from 'react'
 import ELK from 'elkjs/lib/elk.bundled.js'
 import type { ElkNode, ElkExtendedEdge, ElkPoint } from 'elkjs'
@@ -33,9 +34,9 @@ export function Example11() {
         'elk.spacing.nodeNode': '40',
         'elk.spacing.edgeNode': '60',
         'elk.layered.spacing.edgeNodeBetweenLayers': '30',
-        'elk.layered.spacing.nodeNodeBetweenLayers': '30',
-        'elk.layered.spacing.portPort': '5',
-        'elk.layered.portAlignment': 'BEGIN',
+        'elk.layered.spacing.nodeNodeBetweenLayers': '10',
+        'elk.spacing.portPort': '5',
+        'elk.layered.portAlignment': 'CENTER',
       },
       children: nodes.map((n) => ({
         id: n.id,
@@ -167,25 +168,7 @@ export function Example11() {
                 setCurrentIndex(currentIndex === node.id ? null : node.id)
               }
             >
-              <rect
-                width={nodeWidth}
-                height={48}
-                rx={4}
-                fill={fill}
-                stroke="#999"
-                strokeWidth={1}
-              />
-              <text
-                x={nodeWidth / 2}
-                y={24}
-                fontSize={12}
-                fill="#666"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                style={{ pointerEvents: 'none' }}
-              >
-                {node.id}
-              </text>
+              <BaseNode id={node.id} variant="outline" fill={fill} />
             </g>
           )
         })}
